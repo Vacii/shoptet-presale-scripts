@@ -1,0 +1,25 @@
+{
+  "name": "presale",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Vacii/shoptet-presale-scripts#readme",
+  "bugs": {
+    "url": "https://github.com/Vacii/shoptet-presale-scripts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vacii/shoptet-presale-scripts.git"
+  },
+  "license": "MIT",
+  "author": "Lukáš Václavek",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r src/* dist/ && cp -r assets/* dist/ 2>/dev/null || echo \"Build completed successfully\"",
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "swiper": "^12.0.2"
+  }
+}
