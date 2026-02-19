@@ -1,0 +1,13 @@
+name: 🚀 Deploy Current Version
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Calling deploy workflow
+    if: github.actor != 'shoptet-addon-repository[bot]'
+    uses: shoptet/addon-repository-actions-config/.github/workflows/default.workflow.yml@main
