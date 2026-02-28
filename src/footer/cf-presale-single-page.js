@@ -322,14 +322,8 @@ document.addEventListener("DOMContentLoaded", function () {
    * based on the Shoptet project ID extracted from the `dataLayer`.
    */
   async function loadSource() {
-    let projectId = null;
-
-    if (Array.isArray(dataLayer)) {
-      const shoptetObj = dataLayer.find((item) => item.shoptet);
-      if (shoptetObj) {
-        projectId = shoptetObj.shoptet.projectId;
-      }
-    }
+    const shoptetObj = dataLayer.find((item) => item.shoptet);
+    const projectId = shoptetObj.shoptet.projectId;
 
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,

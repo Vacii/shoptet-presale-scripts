@@ -198,93 +198,86 @@ document.addEventListener("DOMContentLoaded", function () {
    * Loads configuration and applies presale modifications.
    */
   (async function () {
-    if (Array.isArray(dataLayer) && dataLayer.length > 0) {
-      let projectId = dataLayer[0]?.shoptet?.projectId;
-      let productGuid = dataLayer[0]?.shoptet?.product?.guid;
+    const projectId = dataLayer[0].shoptet.projectId;
+    const productGuid = dataLayer[0].shoptet.product?.guid;
 
-      const config = await fetch(
-        `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
-      )
-        .then((response) => response.json())
-        .catch((error) => console.error("Error fetching JSON:", error));
+    const config = await fetch(
+      `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
+    )
+      .then((response) => response.json())
+      .catch((error) => console.error("Error fetching JSON:", error));
 
-      if (
-        dataLayer[0].shoptet.pageType === "productDetail" &&
-        (config.presaleProducts.length === 0 ||
-          config.presaleProducts[0].guid !== productGuid)
-      ) {
-        return;
-      }
+    if (
+      dataLayer[0].shoptet.pageType === "productDetail" &&
+      (config.presaleProducts.length === 0 ||
+        config.presaleProducts[0].guid !== productGuid)
+    ) {
+      return;
+    }
 
-      if (config) {
-        let presaleProducts = config.presaleProducts || [];
-        if (!presaleProducts[0].visible) return;
+    if (config) {
+      let presaleProducts = config.presaleProducts || [];
+      if (!presaleProducts[0].visible) return;
 
-        const template = shoptet.design.template.name;
+      const template = shoptet.design.template.name;
 
-        if (dataLayer[0].shoptet.pageType === "productDetail") {
-          modifyPage(presaleProducts[0].presale, template);
-          document.querySelector(".presale-first-bar-content").addEventListener("click", function (e) {
+      if (dataLayer[0].shoptet.pageType === "productDetail") {
+        modifyPage(presaleProducts[0].presale, template);
+        document
+          .querySelector(".presale-first-bar-content")
+          .addEventListener("click", function (e) {
             if (e.target.closest(".presale-code-copy-btn")) {
               copyCode();
             }
           });
-        } else {
-          modifyCategoryPage(
-            presaleProducts[0].guid,
-            presaleProducts[0].presale,
-          );
+      } else {
+        modifyCategoryPage(presaleProducts[0].guid, presaleProducts[0].presale);
 
-          const endDate = new Date(presaleProducts[0].endDate).getTime();
+        const endDate = new Date(presaleProducts[0].endDate).getTime();
+        getCatalogCountdown(endDate, presaleProducts[0].code);
+        catalogTimer = setInterval(function () {
           getCatalogCountdown(endDate, presaleProducts[0].code);
-          catalogTimer = setInterval(function () {
-            getCatalogCountdown(endDate, presaleProducts[0].code);
-          }, 10000);
-          return;
-        }
+        }, 10000);
+        return;
+      }
 
-        presaleProducts.forEach((presaleProduct) => {
-          if (presaleProduct.guid === productGuid) {
-            document.querySelector(".presale-bar-first").insertAdjacentHTML(
-              "afterend",
-              `
+      presaleProducts.forEach((presaleProduct) => {
+        if (presaleProduct.guid === productGuid) {
+          document.querySelector(".presale-bar-first").insertAdjacentHTML(
+            "afterend",
+            `
               <div class="presale-bar presale-bar-second">
                 <div class="presale-second-bar-content"><p></p></div>
               </div>
             `,
-            );
+          );
 
-            document.querySelector(".presale-tooltiptext").innerHTML =
-              presaleProduct.info ||
-              "Tento produkt se dá předobjednat. Odešleme ho hned, jakmile bude dostupný.";
+          document.querySelector(".presale-tooltiptext").innerHTML =
+            presaleProduct.info ||
+            "Tento produkt se dá předobjednat. Odešleme ho hned, jakmile bude dostupný.";
 
-            const presaleEndDateTime = new Date(
-              presaleProduct.endDate,
-            ).getTime();
-            const description =
-              presaleProduct.description ||
-              `Sleva ${presaleProduct.sale}% na předobjednávku`;
+          const presaleEndDateTime = new Date(presaleProduct.endDate).getTime();
+          const description =
+            presaleProduct.description ||
+            `Sleva ${presaleProduct.sale}% na předobjednávku`;
 
+          getCountdown(
+            presaleEndDateTime,
+            description,
+            presaleProduct.code,
+            presaleProduct.visible,
+          );
+
+          productDetailTimer = setInterval(function () {
             getCountdown(
               presaleEndDateTime,
               description,
               presaleProduct.code,
               presaleProduct.visible,
             );
-
-            productDetailTimer = setInterval(function () {
-              getCountdown(
-                presaleEndDateTime,
-                description,
-                presaleProduct.code,
-                presaleProduct.visible,
-              );
-            }, 10000);
-          }
-        });
-      }
-    } else {
-      console.error("dataLayer is empty or not defined properly.");
+          }, 10000);
+        }
+      });
     }
   })();
 
