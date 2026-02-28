@@ -502,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
             videoMobile.muted = true;
           });
 
-          const desktopSwiper = new Swiper(".desktopSwiper", {
+          new Swiper(".desktopSwiper", {
             slidesPerView: 2,
             spaceBetween: 0,
             loop: true,
@@ -512,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
           });
 
-          var cardSwiper = new Swiper(".cardSwiper", {
+          new Swiper(".cardSwiper", {
             effect: "cards",
             grabCursor: true,
             navigation: {
@@ -594,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const presaleEndDate = new Date(landingConfig.endDate).getTime();
     getCountdown(presaleEndDate);
 
-    let x = setInterval(function () {
+    countdownTimer = setInterval(function () {
       getCountdown(presaleEndDate);
     }, 10000);
 
@@ -627,7 +627,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "min";
 
     if (distance < 0) {
-      clearInterval(x);
+      clearInterval(countdownTimer);
       document.querySelector(".presale-sl-countdown span").innerHTML =
         "Sleva skončila";
     }
@@ -642,9 +642,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("content")?.classList.add("presale-sl-main");
 
+  let countdownTimer;
   loadSource();
 
-  var swiper = new Swiper(".mySwiper", {
+  new Swiper(".mySwiper", {
     slidesPerView: 3,
     spaceBetween: 0,
     loop: true,

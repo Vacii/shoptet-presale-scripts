@@ -191,6 +191,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  let catalogTimer;
+  let productDetailTimer;
+
   /**
    * Loads configuration and applies presale modifications.
    */
@@ -229,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const endDate = new Date(presaleProducts[0].endDate).getTime();
           getCatalogCountdown(endDate, presaleProducts[0].code);
-          let catalogTimer = setInterval(function () {
+          catalogTimer = setInterval(function () {
             getCatalogCountdown(endDate, presaleProducts[0].code);
           }, 10000);
           return;
@@ -264,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
               presaleProduct.visible,
             );
 
-            let x = setInterval(function () {
+            productDetailTimer = setInterval(function () {
               getCountdown(
                 presaleEndDateTime,
                 description,
@@ -347,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (distance < 0) {
         document.querySelector(".presale-second-bar-content p").innerHTML =
           "Předobjednávka skončila";
-        clearInterval(x);
+        clearInterval(productDetailTimer);
       }
     } else {
       document.querySelector(".presale-first-bar-content p").innerHTML =
@@ -355,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (distance < 0) {
         document.querySelector(".presale-first-bar-content p").innerHTML =
           "Předobjednávka skončila";
-        clearInterval(x);
+        clearInterval(productDetailTimer);
       }
     }
   };
