@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const showDescriptionText = code
       ? `<span class="presale-sale-description">${description}</span> | Kód: <span class="presale-sale-code">${code}</span>
-        <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="copy text" height="15px" /></button>`
+        <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="Kopírovat kód" height="15px" /></button>`
       : description;
 
     if (visible === true) {

@@ -38,7 +38,7 @@ const presaleContent = `
         <img
           class="presale-sl-variable-benefit-banner"
           src="./Plain - Page_files/sub-banner.png"
-          alt="sub-banner"
+          alt="Propagační banner"
         />
       </a>
       <div class="presale-sl-usp">
@@ -66,7 +66,7 @@ const presaleContent = `
       <img
         class="presale-sl-variable-compare-desktop"
         src="./Plain - Page_files/compare-products.png"
-        alt="compare"
+        alt="Srovnání produktů"
       />
     </a>
         <div class="presale-sl-sale-bar">
@@ -82,7 +82,7 @@ const presaleContent = `
                 <img
                   class="presale-sl-sale-code-copy-icon"
                   src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg"
-                  alt="copy text"
+                  alt="Kopírovat kód"
                   height="15px"
                 />
               </button>
@@ -99,7 +99,7 @@ const presaleContent = `
         <div class="swiper-slide presale-sl-swiper-item">
           <div class="presale-sl-swiper-item-content">
             <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product2.webp" alt="slide" />
+              <img src="./Plain - Page_files/product2.webp" alt="Náhled produktu" />
             </div>
             <div class="presale-sl-swiper-product-info">
               <h4>Nazev produktu</h4>
@@ -115,7 +115,7 @@ const presaleContent = `
         <div class="swiper-slide presale-sl-swiper-item">
           <div class="presale-sl-swiper-item-content">
             <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product3.webp" alt="slide" />
+              <img src="./Plain - Page_files/product3.webp" alt="Náhled produktu" />
             </div>
             <div class="presale-sl-swiper-product-info">
               <h4>Nazev produktu</h4>
@@ -131,7 +131,7 @@ const presaleContent = `
         <div class="swiper-slide presale-sl-swiper-item">
           <div class="presale-sl-swiper-item-content">
             <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product1.webp" alt="slide" />
+              <img src="./Plain - Page_files/product1.webp" alt="Náhled produktu" />
             </div>
             <div class="presale-sl-swiper-product-info">
               <h4>Nazev produktu</h4>
@@ -147,7 +147,7 @@ const presaleContent = `
         <div class="swiper-slide presale-sl-swiper-item">
           <div class="presale-sl-swiper-item-content">
             <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product2.webp" alt="slide" />
+              <img src="./Plain - Page_files/product2.webp" alt="Náhled produktu" />
             </div>
             <div class="presale-sl-swiper-product-info">
               <h4>Nazev produktu</h4>
@@ -163,7 +163,7 @@ const presaleContent = `
         <div class="swiper-slide presale-sl-swiper-item">
           <div class="presale-sl-swiper-item-content">
             <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product3.webp" alt="slide" />
+              <img src="./Plain - Page_files/product3.webp" alt="Náhled produktu" />
             </div>
             <div class="presale-sl-swiper-product-info">
               <h4>Nazev produktu</h4>
