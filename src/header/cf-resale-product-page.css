@@ -9,22 +9,11 @@
   align-items: center;
   background: rgb(235, 72, 62);
   border-radius: 5px;
-  background: -moz-linear-gradient(
-    90deg,
-    rgba(235, 72, 62, 1) 0%,
-    rgba(240, 150, 60, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgba(235, 72, 62, 1) 0%,
-    rgba(240, 150, 60, 1) 100%
-  );
   background: linear-gradient(
     90deg,
     rgba(235, 72, 62, 1) 0%,
     rgba(240, 150, 60, 1) 100%
   );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#eb483e",endColorstr="#f0963c",GradientType=1);
 }
 
 .availability-value {
@@ -106,22 +95,11 @@
   width: 80%;
   max-width: 400px;
   background: rgb(235, 72, 62);
-  background: -moz-linear-gradient(
-    90deg,
-    rgba(235, 72, 62, 1) 0%,
-    rgba(240, 150, 60, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgba(235, 72, 62, 1) 0%,
-    rgba(240, 150, 60, 1) 100%
-  );
   background: linear-gradient(
     90deg,
     rgba(235, 72, 62, 1) 0%,
     rgba(240, 150, 60, 1) 100%
   );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#eb483e",endColorstr="#f0963c",GradientType=1);
   padding: 10px;
   border-radius: 5px;
   margin-top: 10px;
