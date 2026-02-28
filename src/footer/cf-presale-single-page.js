@@ -49,16 +49,16 @@ const presaleContent = `
           <div class="swiper-wrapper">
 
           </div>
-          <div class="swiper-button-next presale-sl-swiper-ugc-button-next"></div>
-          <div class="swiper-button-prev presale-sl-swiper-ugc-button-prev"></div>
+          <button class="swiper-button-next presale-sl-swiper-ugc-button-next"></button>
+          <button class="swiper-button-prev presale-sl-swiper-ugc-button-prev"></button>
         </div>
 
     <div class="presale-sl-ugcs-mobile">
       <div class="swiper cardSwiper">
         <div class="swiper-wrapper">
         </div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
+        <button class="swiper-button-next"></button>
+        <button class="swiper-button-prev"></button>
       </div>
     </div>
 
@@ -176,8 +176,8 @@ const presaleContent = `
           </div>
         </div>
       </div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
+      <button class="swiper-button-next"></button>
+      <button class="swiper-button-prev"></button>
     </div>
         <div class="presale-sl-countdown">
           <span>2d : 21h : 14min</span>
