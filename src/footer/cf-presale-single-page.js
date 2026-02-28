@@ -106,8 +106,7 @@ const presaleContent = `
               <p>69 Kč</p>
               <a
                 href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                target="_blank"
-                >Koupit</a
+                >Detail</a
               >
             </div>
           </div>
@@ -122,8 +121,7 @@ const presaleContent = `
               <p>69 Kč</p>
               <a
                 href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                target="_blank"
-                >Koupit</a
+                >Detail</a
               >
             </div>
           </div>
@@ -138,8 +136,7 @@ const presaleContent = `
               <p>69 Kč</p>
               <a
                 href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                target="_blank"
-                >Koupit</a
+                >Detail</a
               >
             </div>
           </div>
@@ -154,8 +151,7 @@ const presaleContent = `
               <p>69 Kč</p>
               <a
                 href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                target="_blank"
-                >Koupit</a
+                >Detail</a
               >
             </div>
           </div>
@@ -170,8 +166,7 @@ const presaleContent = `
               <p>69 Kč</p>
               <a
                 href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                target="_blank"
-                >Koupit</a
+                >Detail</a
               >
             </div>
           </div>
@@ -310,8 +305,7 @@ function updateBanner(mediaUrl, productUrl = "#", altText = "") {
   const link = document.createElement("a");
   link.className = "presale-sl-title-banner-link";
   link.setAttribute("href", productUrl);
-  link.setAttribute("target", "_blank");
-  link.textContent = "Koupit";
+  link.textContent = "Detail";
 
   container.appendChild(link);
 }
