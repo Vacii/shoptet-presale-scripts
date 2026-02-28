@@ -220,10 +220,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let presaleProducts = config.presaleProducts || [];
         if (!presaleProducts[0].visible) return;
 
-        const template = shoptet.design.template.name || "Classic";
+        const template = shoptet.design.template.name;
 
         if (dataLayer[0].shoptet.pageType === "productDetail") {
           modifyPage(presaleProducts[0].presale, template);
+          document.querySelector(".presale-first-bar-content").addEventListener("click", function (e) {
+            if (e.target.closest(".presale-code-copy-btn")) {
+              copyCode();
+            }
+          });
         } else {
           modifyCategoryPage(
             presaleProducts[0].guid,
@@ -339,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const showDescriptionText = code
       ? `<span class="presale-sale-description">${description}</span> | Kód: <span class="presale-sale-code">${code}</span>
-        <img class="presale-code-copy-icon" onclick="copyCode()" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="copy text" height="15px" />`
+        <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="copy text" height="15px" /></button>`
       : description;
 
     if (visible === true) {
