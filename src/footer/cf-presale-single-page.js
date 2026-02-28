@@ -78,13 +78,14 @@ const presaleContent = `
             <span class="presale-sl-sale-span">Kód:&nbsp;</span>
             <span class="presale-sl-sale-span presale-sl-sale-code">10DAYS</span>
             <div class="presale-sl-sale-tooltip presale-sl-sale-span">
-              <img
-                class="presale-sl-sale-code-copy-icon"
-                onclick="copySinglePageCode()"
-                src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg"
-                alt="copy text"
-                height="15px"
-              />
+              <button class="presale-sl-sale-code-copy-btn">
+                <img
+                  class="presale-sl-sale-code-copy-icon"
+                  src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg"
+                  alt="copy text"
+                  height="15px"
+                />
+              </button>
               <span class="presale-sl-tooltip-text">Kopírovat kód</span>
           </div>
           </div>
@@ -342,6 +343,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (config.soloLanding[0].url !== window.location.href) return;
 
     document.querySelector('div[itemprop="about"]').innerHTML = presaleContent;
+    document
+      .querySelector(".presale-sl-sale-code-copy-btn")
+      .addEventListener("click", copySinglePageCode);
     document.getElementsByClassName("content-inner")[0].style.width = "100%";
     document.getElementById("content").style.justifyContent = "start";
 
