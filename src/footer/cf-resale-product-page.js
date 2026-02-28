@@ -34,7 +34,7 @@ function copyCode() {
     },
     function (err) {
       console.error("Async: Could not copy text: ", err);
-    }
+    },
   );
 }
 
@@ -45,15 +45,21 @@ function copyCode() {
 document.addEventListener("DOMContentLoaded", function () {
   if (
     !["homepage", "category", "productDetail"].includes(
-      dataLayer[0].shoptet.pageType
+      dataLayer[0].shoptet.pageType,
     )
   ) {
     return;
   }
 
-  const applyPresaleLabelModifications = (selector, isPresale, dismissBgColor = false) => {
+  const applyPresaleLabelModifications = (
+    selector,
+    isPresale,
+    dismissBgColor = false,
+  ) => {
     if (isPresale) {
-      const addToCartBtn = document.querySelector("button.add-to-cart-button.btn-conversion");
+      const addToCartBtn = document.querySelector(
+        "button.add-to-cart-button.btn-conversion",
+      );
       if (addToCartBtn) addToCartBtn.innerHTML = "Předobjednat";
 
       const availabilityLabel = document.querySelector(selector);
@@ -65,15 +71,20 @@ document.addEventListener("DOMContentLoaded", function () {
           availabilityLabel.style.backgroundColor = "";
         }
 
-        availabilityLabel.insertAdjacentHTML("afterend", `
+        availabilityLabel.insertAdjacentHTML(
+          "afterend",
+          `
           <span class="presale-info presale-tooltip">
             &#9432;
             <span class="presale-tooltiptext">Tooltip text</span>
           </span>
-        `);
+        `,
+        );
       }
 
-      const priceSave = document.querySelector(".p-final-price-wrapper .price-save");
+      const priceSave = document.querySelector(
+        ".p-final-price-wrapper .price-save",
+      );
       if (priceSave) priceSave.style.color = "rgb(240, 150, 60)";
     }
   };
@@ -93,25 +104,50 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
 
     if (template === "Classic") {
-      document.querySelector(".add-to-cart")?.insertAdjacentHTML("afterend", content);
+      document
+        .querySelector(".add-to-cart")
+        ?.insertAdjacentHTML("afterend", content);
       applyPresaleLabelModifications("span.availability-label", isPresale);
     } else if (template === "Samba") {
-      document.querySelector(".p-price-wrapper")?.insertAdjacentHTML("afterend", content);
+      document
+        .querySelector(".p-price-wrapper")
+        ?.insertAdjacentHTML("afterend", content);
       applyPresaleLabelModifications("span.availability-label", isPresale);
     } else if (template === "Step") {
-      document.querySelector(".p-basic-info-block")?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications('span[data-testid="labelAvailability"]', isPresale);
+      document
+        .querySelector(".p-basic-info-block")
+        ?.insertAdjacentHTML("afterend", content);
+      applyPresaleLabelModifications(
+        'span[data-testid="labelAvailability"]',
+        isPresale,
+      );
     } else if (template === "Tango") {
-      document.querySelector(".p-short-description")?.insertAdjacentHTML("afterend", content);
+      document
+        .querySelector(".p-short-description")
+        ?.insertAdjacentHTML("afterend", content);
       if (isPresale) {
-        applyPresaleLabelModifications('span[data-testid="labelAvailability"]', isPresale);
+        applyPresaleLabelModifications(
+          'span[data-testid="labelAvailability"]',
+          isPresale,
+        );
       }
     } else if (template === "Techno") {
-      document.querySelector(".detail-parameters.second")?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications('span[data-testid="labelAvailability"]', isPresale, true);
+      document
+        .querySelector(".detail-parameters.second")
+        ?.insertAdjacentHTML("afterend", content);
+      applyPresaleLabelModifications(
+        'span[data-testid="labelAvailability"]',
+        isPresale,
+        true,
+      );
     } else if (template === "Disco") {
-      document.querySelector(".detail-parameters")?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications('span[data-testid="labelAvailability"]', isPresale);
+      document
+        .querySelector(".detail-parameters")
+        ?.insertAdjacentHTML("afterend", content);
+      applyPresaleLabelModifications(
+        'span[data-testid="labelAvailability"]',
+        isPresale,
+      );
     }
   };
 
@@ -121,7 +157,9 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {boolean} isPresale - Whether product is in presale.
    */
   const modifyCategoryPage = (identifier, isPresale) => {
-    const product = document.querySelector(`.p[data-micro-identifier="${identifier}"]`);
+    const product = document.querySelector(
+      `.p[data-micro-identifier="${identifier}"]`,
+    );
     if (!product) return;
 
     const targetAnchor = product.querySelector(".p-in-in a");
@@ -162,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let productGuid = dataLayer[0]?.shoptet?.product?.guid;
 
       const config = await fetch(
-        `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`
+        `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
       )
         .then((response) => response.json())
         .catch((error) => console.error("Error fetching JSON:", error));
@@ -186,31 +224,34 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           modifyCategoryPage(
             presaleProducts[0].guid,
-            presaleProducts[0].presale
+            presaleProducts[0].presale,
           );
 
           const endDate = new Date(presaleProducts[0].endDate).getTime();
           getCatalogCountdown(endDate, presaleProducts[0].code);
           let catalogTimer = setInterval(function () {
             getCatalogCountdown(endDate, presaleProducts[0].code);
-          }, 30000);
+          }, 10000);
           return;
         }
 
         presaleProducts.forEach((presaleProduct) => {
           if (presaleProduct.guid === productGuid) {
-            document.querySelector(".presale-bar-first").insertAdjacentHTML("afterend", `
+            document.querySelector(".presale-bar-first").insertAdjacentHTML(
+              "afterend",
+              `
               <div class="presale-bar presale-bar-second">
                 <div class="presale-second-bar-content"><p></p></div>
               </div>
-            `);
+            `,
+            );
 
             document.querySelector(".presale-tooltiptext").innerHTML =
               presaleProduct.info ||
               "Tento produkt se dá předobjednat. Odešleme ho hned, jakmile bude dostupný.";
 
             const presaleEndDateTime = new Date(
-              presaleProduct.endDate
+              presaleProduct.endDate,
             ).getTime();
             const description =
               presaleProduct.description ||
@@ -220,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
               presaleEndDateTime,
               description,
               presaleProduct.code,
-              presaleProduct.visible
+              presaleProduct.visible,
             );
 
             let x = setInterval(function () {
@@ -228,9 +269,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 presaleEndDateTime,
                 description,
                 presaleProduct.code,
-                presaleProduct.visible
+                presaleProduct.visible,
               );
-            }, 30000);
+            }, 10000);
           }
         });
       }
@@ -250,7 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let days = Math.floor(distance / (1000 * 60 * 60 * 24));
     let hours = Math.floor(
-      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -282,14 +323,14 @@ document.addEventListener("DOMContentLoaded", function () {
     countDownDateTime,
     description,
     code,
-    visible = false
+    visible = false,
   ) {
     let now = new Date().getTime();
     let distance = countDownDateTime - now;
 
     let days = Math.floor(distance / (1000 * 60 * 60 * 24));
     let hours = Math.floor(
-      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -301,7 +342,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (visible === true) {
       document.querySelector(".presale-second-bar-content p").innerHTML =
         `${days}d <span class="pulse">:</span> ${hours}h <span class="pulse">:</span> ${minutes}m`;
-      document.querySelector(".presale-first-bar-content p").innerHTML = showDescriptionText;
+      document.querySelector(".presale-first-bar-content p").innerHTML =
+        showDescriptionText;
       if (distance < 0) {
         document.querySelector(".presale-second-bar-content p").innerHTML =
           "Předobjednávka skončila";
