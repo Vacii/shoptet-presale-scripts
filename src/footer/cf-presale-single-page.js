@@ -629,18 +629,17 @@ document.addEventListener('DOMContentLoaded', function () {
     );
     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-    $('.presale-sl-countdown span:first').html(
+    document.querySelector('.presale-sl-countdown span').innerHTML =
       days +
         'd <span class="presale-sl-pulse">:</span> ' +
         hours +
         'h <span class="presale-sl-pulse">:</span> ' +
         minutes +
-        'min'
-    );
+        'min';
 
     if (distance < 0) {
       clearInterval(x);
-      $('.presale-sl-countdown span:first').html('Sleva skončila');
+      document.querySelector('.presale-sl-countdown span').innerHTML = 'Sleva skončila';
     }
   };
 
