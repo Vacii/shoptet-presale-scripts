@@ -290,9 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
     )
-      // const config = await fetch(
-      //   `http://localhost:8000/config?clientId=${projectId}`
-      // )
       .then((response) => response.json())
       .catch((error) => console.error("Error fetching JSON:", error));
 
