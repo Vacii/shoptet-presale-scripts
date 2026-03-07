@@ -250,10 +250,6 @@ function updateBanner(mediaUrl, productUrl = "#", altText = "") {
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    video.setAttribute("loop", "");
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-    video.setAttribute("autoplay", "");
     video.setAttribute("alt", altText);
     video.className = "lazyloaded";
 
@@ -337,9 +333,12 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-benefit-first");
             return;
           }
-          const firstBenefitImage = document.querySelector(".preslae-sl-variable-benefit-first");
+          const firstBenefitImage = document.querySelector(
+            ".preslae-sl-variable-benefit-first",
+          );
           firstBenefitImage.src = component.src;
-          document.querySelector(".presale-sl-benefit-first").href = component.redirectUrl;
+          document.querySelector(".presale-sl-benefit-first").href =
+            component.redirectUrl;
 
           firstBenefitImage.setAttribute("alt", component.alt || "");
           break;
@@ -348,9 +347,12 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-benefit-second");
             return;
           }
-          const secondBenefitImage = document.querySelector(".preslae-sl-variable-benefit-second");
+          const secondBenefitImage = document.querySelector(
+            ".preslae-sl-variable-benefit-second",
+          );
           secondBenefitImage.src = component.src;
-          document.querySelector(".presale-sl-benefit-second").href = component.redirectUrl;
+          document.querySelector(".presale-sl-benefit-second").href =
+            component.redirectUrl;
 
           secondBenefitImage.setAttribute("alt", component.alt || "");
           break;
@@ -359,9 +361,12 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-sub-banner");
             return;
           }
-          const benefitBanner = document.querySelector(".presale-sl-variable-benefit-banner");
+          const benefitBanner = document.querySelector(
+            ".presale-sl-variable-benefit-banner",
+          );
           benefitBanner.src = component.src;
-          document.querySelector(".presale-sl-sub-banner").href = component.redirectUrl;
+          document.querySelector(".presale-sl-sub-banner").href =
+            component.redirectUrl;
 
           benefitBanner.setAttribute("alt", component.alt || "");
           break;
@@ -370,9 +375,12 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-compare-banner");
             return;
           }
-          const compareBanner = document.querySelector(".presale-sl-variable-compare-desktop");
+          const compareBanner = document.querySelector(
+            ".presale-sl-variable-compare-desktop",
+          );
           compareBanner.src = component.src;
-          document.querySelector(".presale-sl-compare-banner").href = component.redirectUrl;
+          document.querySelector(".presale-sl-compare-banner").href =
+            component.redirectUrl;
 
           compareBanner.setAttribute("alt", component.alt || "");
           break;
@@ -529,24 +537,28 @@ document.addEventListener("DOMContentLoaded", function () {
             accordion.appendChild(accordionItem);
           });
 
-          document.querySelectorAll(".presale-accordion-header").forEach((header) => {
-            header.addEventListener("click", () => {
-              const content = header.nextElementSibling;
-              const isOpen = content.classList.contains("open");
+          document
+            .querySelectorAll(".presale-accordion-header")
+            .forEach((header) => {
+              header.addEventListener("click", () => {
+                const content = header.nextElementSibling;
+                const isOpen = content.classList.contains("open");
 
-              document.querySelectorAll(".presale-accordion-content").forEach((c) => {
-                c.style.maxHeight = null;
-                c.classList.remove("open");
-                c.previousElementSibling.classList.remove("active");
+                document
+                  .querySelectorAll(".presale-accordion-content")
+                  .forEach((c) => {
+                    c.style.maxHeight = null;
+                    c.classList.remove("open");
+                    c.previousElementSibling.classList.remove("active");
+                  });
+
+                if (!isOpen) {
+                  content.classList.add("open");
+                  header.classList.add("active");
+                  content.style.maxHeight = content.scrollHeight + 40 + "px";
+                }
               });
-
-              if (!isOpen) {
-                content.classList.add("open");
-                header.classList.add("active");
-                content.style.maxHeight = content.scrollHeight + 40 + "px";
-              }
             });
-          });
           break;
         default:
           break;
