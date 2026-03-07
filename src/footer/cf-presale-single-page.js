@@ -260,11 +260,6 @@ function updateBanner(mediaUrl, productUrl = "#", altText = "") {
 
     video.appendChild(source);
     container.appendChild(video);
-
-    // Try to play programmatically (for some browsers)
-    setTimeout(() => {
-      video.play().catch(() => {});
-    }, 100);
   } else if (imageExtensions.some((ext) => lowerUrl.endsWith(ext))) {
     const img = document.createElement("img");
     img.className = "presale-sl-variable-title-banner lazyloaded";
