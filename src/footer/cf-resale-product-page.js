@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
           `
           <span class="presale-info presale-tooltip">
             &#9432;
-            <span class="presale-tooltiptext">Tooltip text</span>
+            <span class="presale-tooltiptext"></span>
           </span>
         `,
         );
