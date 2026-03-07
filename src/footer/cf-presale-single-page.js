@@ -305,12 +305,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("content").classList.add("presale-content-start");
 
     const landingConfig = config.soloLanding[0];
-    const components = landingConfig.components;
 
     /**
      * Iterates over components and renders them based on their type and visibility.
      */
-    components.forEach((component) => {
+    landingConfig.components.forEach((component) => {
       switch (component.name) {
         case "titleBanner":
           updateBanner(component.src, component.redirectUrl, component.alt);
