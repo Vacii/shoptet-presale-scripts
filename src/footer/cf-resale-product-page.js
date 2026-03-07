@@ -65,10 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const availabilityLabel = document.querySelector(selector);
       if (availabilityLabel) {
         availabilityLabel.innerHTML = "Předobjednávka";
-        availabilityLabel.style.color = "rgb(240, 150, 60)";
+        availabilityLabel.classList.add("presale-orange-text");
 
         if (dismissBgColor) {
-          availabilityLabel.style.backgroundColor = "";
+          availabilityLabel.classList.add("presale-bg-transparent");
         }
 
         availabilityLabel.insertAdjacentHTML(
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const priceSave = document.querySelector(
         ".p-final-price-wrapper .price-save",
       );
-      if (priceSave) priceSave.style.color = "rgb(240, 150, 60)";
+      if (priceSave) priceSave.classList.add("presale-orange-text");
     }
   };
 
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (stockLabel) {
         stockLabel.textContent = "Předprodej";
-        stockLabel.style.color = "rgb(240, 150, 60)";
+        stockLabel.classList.add("presale-orange-text");
       }
     }
   };

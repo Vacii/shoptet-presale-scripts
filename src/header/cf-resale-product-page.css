@@ -145,3 +145,11 @@
     display: block;
   }
 }
+
+.presale-orange-text {
+  color: rgb(240, 150, 60);
+}
+
+.presale-bg-transparent {
+  background-color: transparent !important;
+}

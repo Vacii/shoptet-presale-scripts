@@ -299,8 +299,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document
       .querySelector(".presale-sl-sale-code-copy-btn")
       .addEventListener("click", copySinglePageCode);
-    document.getElementsByClassName("content-inner")[0].style.width = "100%";
-    document.getElementById("content").style.justifyContent = "start";
+    document
+      .getElementsByClassName("content-inner")[0]
+      .classList.add("presale-content-inner-full");
+    document.getElementById("content").classList.add("presale-content-start");
 
     const landingConfig = config.soloLanding[0];
     const components = landingConfig.components;
@@ -521,7 +523,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const accordionContent = document.createElement("div");
             accordionContent.classList.add("presale-accordion-content");
-            accordionContent.innerText = item.answer;
+            const accordionInner = document.createElement("div");
+            accordionInner.innerText = item.answer;
+            accordionContent.appendChild(accordionInner);
 
             accordionItem.appendChild(accordionHeader);
             accordionItem.appendChild(accordionContent);
@@ -538,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 document
                   .querySelectorAll(".presale-accordion-content")
                   .forEach((c) => {
-                    c.style.maxHeight = null;
                     c.classList.remove("open");
                     c.previousElementSibling.classList.remove("active");
                   });
@@ -546,7 +549,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!isOpen) {
                   content.classList.add("open");
                   header.classList.add("active");
-                  content.style.maxHeight = content.scrollHeight + 40 + "px";
                 }
               });
             });
@@ -563,10 +565,9 @@ document.addEventListener("DOMContentLoaded", function () {
       getCountdown(presaleEndDate);
     }, 10000);
 
-    document.querySelector('header[itemprop="headline"]').style.display =
-      "flex";
-    document.querySelector('header[itemprop="headline"]').style.justifyContent =
-      "center";
+    document
+      .querySelector('header[itemprop="headline"]')
+      .classList.add("presale-headline-flex");
   }
 
   /**
