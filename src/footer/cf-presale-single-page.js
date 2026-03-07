@@ -217,27 +217,6 @@ function copySinglePageCode() {
 }
 
 /**
- * Updates the `src` attribute of the first element with the given class name.
- * @param {string} className - Class of the element to update.
- * @param {string} src - New source URL.
- * @returns {HTMLElement} Updated element.
- */
-function updateSrcOnClass(className, src) {
-  const source = document.getElementsByClassName(className)[0];
-  source.src = src;
-  return source;
-}
-
-/**
- * Updates the `href` attribute of the first element with the given class name.
- * @param {string} className - Class of the anchor element.
- * @param {string} href - New link URL.
- */
-function updateHrefOnClass(className, href) {
-  document.getElementsByClassName(className)[0].href = href;
-}
-
-/**
  * Hides the first element with the given class name from view.
  * @param {string} className - Class of the element to hide.
  */
@@ -359,11 +338,9 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-benefit-first");
             return;
           }
-          const firstBenefitImage = updateSrcOnClass(
-            "preslae-sl-variable-benefit-first",
-            component.src,
-          );
-          updateHrefOnClass("presale-sl-benefit-first", component.redirectUrl);
+          const firstBenefitImage = document.querySelector(".preslae-sl-variable-benefit-first");
+          firstBenefitImage.src = component.src;
+          document.querySelector(".presale-sl-benefit-first").href = component.redirectUrl;
 
           firstBenefitImage.setAttribute("alt", component.alt || "");
           break;
@@ -372,11 +349,9 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-benefit-second");
             return;
           }
-          const secondBenefitImage = updateSrcOnClass(
-            "preslae-sl-variable-benefit-second",
-            component.src,
-          );
-          updateHrefOnClass("presale-sl-benefit-second", component.redirectUrl);
+          const secondBenefitImage = document.querySelector(".preslae-sl-variable-benefit-second");
+          secondBenefitImage.src = component.src;
+          document.querySelector(".presale-sl-benefit-second").href = component.redirectUrl;
 
           secondBenefitImage.setAttribute("alt", component.alt || "");
           break;
@@ -385,11 +360,9 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-sub-banner");
             return;
           }
-          const benefitBanner = updateSrcOnClass(
-            "presale-sl-variable-benefit-banner",
-            component.src,
-          );
-          updateHrefOnClass("presale-sl-sub-banner", component.redirectUrl);
+          const benefitBanner = document.querySelector(".presale-sl-variable-benefit-banner");
+          benefitBanner.src = component.src;
+          document.querySelector(".presale-sl-sub-banner").href = component.redirectUrl;
 
           benefitBanner.setAttribute("alt", component.alt || "");
           break;
@@ -398,11 +371,9 @@ document.addEventListener("DOMContentLoaded", function () {
             hideBannerOnClass("presale-sl-compare-banner");
             return;
           }
-          const compareBanner = updateSrcOnClass(
-            "presale-sl-variable-compare-desktop",
-            component.src,
-          );
-          updateHrefOnClass("presale-sl-compare-banner", component.redirectUrl);
+          const compareBanner = document.querySelector(".presale-sl-variable-compare-desktop");
+          compareBanner.src = component.src;
+          document.querySelector(".presale-sl-compare-banner").href = component.redirectUrl;
 
           compareBanner.setAttribute("alt", component.alt || "");
           break;
