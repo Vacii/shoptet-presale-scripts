@@ -45,7 +45,7 @@ function copyCode() {
 document.addEventListener("DOMContentLoaded", function () {
   if (
     !["homepage", "category", "productDetail"].includes(
-      dataLayer[0].shoptet.pageType,
+      getShoptetDataLayer("pageType"),
     )
   ) {
     return;
@@ -198,8 +198,8 @@ document.addEventListener("DOMContentLoaded", function () {
    * Loads configuration and applies presale modifications.
    */
   (async function () {
-    const projectId = dataLayer[0].shoptet.projectId;
-    const productGuid = dataLayer[0].shoptet.product?.guid;
+    const projectId = getShoptetDataLayer("projectId");
+    const productGuid = getShoptetDataLayer("product")?.guid;
 
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error fetching JSON:", error));
 
     if (
-      dataLayer[0].shoptet.pageType === "productDetail" &&
+      getShoptetDataLayer("pageType") === "productDetail" &&
       (config.presaleProducts.length === 0 ||
         config.presaleProducts[0].guid !== productGuid)
     ) {
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const template = shoptet.design.template.name;
 
-      if (dataLayer[0].shoptet.pageType === "productDetail") {
+      if (getShoptetDataLayer("pageType") === "productDetail") {
         modifyPage(presaleProducts[0].presale, template);
         document
           .querySelector(".presale-first-bar-content")

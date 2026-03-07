@@ -285,8 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
    * based on the Shoptet project ID extracted from the `dataLayer`.
    */
   async function loadSource() {
-    const shoptetObj = dataLayer.find((item) => item.shoptet);
-    const projectId = shoptetObj.shoptet.projectId;
+    const projectId = getShoptetDataLayer("projectId");
 
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
@@ -605,7 +604,7 @@ document.addEventListener("DOMContentLoaded", function () {
   /**
    * Only proceed if we are on the allowed page type (e.g., article).
    */
-  if (!["article"].includes(dataLayer[0].shoptet.pageType)) {
+  if (!["article"].includes(getShoptetDataLayer("pageType"))) {
     return;
   }
 
