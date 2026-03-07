@@ -178,8 +178,8 @@ const presaleContent = `
         <div class="presale-sl-countdown">
           <span>2d : 21h : 14min</span>
     </div>
-    <div class="accordion-wrapper">
-      <div class="accordion">
+    <div class="presale-accordion-wrapper">
+      <div class="presale-accordion">
    
    
    
@@ -537,21 +537,21 @@ document.addEventListener("DOMContentLoaded", function () {
           break;
         case "accordion":
           if (!component.visible) {
-            hideBannerOnClass("accordion-wrapper");
+            hideBannerOnClass("presale-accordion-wrapper");
             return;
           }
-          const accordion = document.querySelector(".accordion");
+          const accordion = document.querySelector(".presale-accordion");
           component.description.forEach((item) => {
             const accordionItem = document.createElement("div");
-            accordionItem.classList.add("accordion-item");
+            accordionItem.classList.add("presale-accordion-item");
 
             const accordionHeader = document.createElement("div");
-            accordionHeader.classList.add("accordion-header");
+            accordionHeader.classList.add("presale-accordion-header");
             accordionHeader.innerHTML =
-              item.question + '<span class="accordion-icon">▼</span>';
+              item.question + '<span class="presale-accordion-icon">▼</span>';
 
             const accordionContent = document.createElement("div");
-            accordionContent.classList.add("accordion-content");
+            accordionContent.classList.add("presale-accordion-content");
             accordionContent.innerText = item.answer;
 
             accordionItem.appendChild(accordionHeader);
@@ -559,12 +559,12 @@ document.addEventListener("DOMContentLoaded", function () {
             accordion.appendChild(accordionItem);
           });
 
-          document.querySelectorAll(".accordion-header").forEach((header) => {
+          document.querySelectorAll(".presale-accordion-header").forEach((header) => {
             header.addEventListener("click", () => {
               const content = header.nextElementSibling;
               const isOpen = content.classList.contains("open");
 
-              document.querySelectorAll(".accordion-content").forEach((c) => {
+              document.querySelectorAll(".presale-accordion-content").forEach((c) => {
                 c.style.maxHeight = null;
                 c.classList.remove("open");
                 c.previousElementSibling.classList.remove("active");

@@ -523,7 +523,7 @@ main {
   border-radius: 20px;
 }
 
-.accordion-wrapper {
+.presale-accordion-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -532,7 +532,7 @@ main {
   margin-bottom: 2em;
 }
 
-.accordion {
+.presale-accordion {
   max-width: 600px;
   width: 100%;
   background: white;
@@ -541,11 +541,11 @@ main {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.accordion-item {
+.presale-accordion-item {
   border-top: 1px solid #e5e7eb;
 }
 
-.accordion-header {
+.presale-accordion-header {
   background: white;
   cursor: pointer;
   padding: 1em 1.5em;
@@ -556,19 +556,19 @@ main {
   transition: background 0.2s ease;
 }
 
-.accordion-header:hover {
+.presale-accordion-header:hover {
   background: #f9fafb;
 }
 
-.accordion-icon {
+.presale-accordion-icon {
   transition: transform 0.3s ease;
 }
 
-.accordion-header.active .accordion-icon {
+.presale-accordion-header.active .presale-accordion-icon {
   transform: rotate(180deg);
 }
 
-.accordion-content {
+.presale-accordion-content {
   height: auto;
   max-height: 0;
   overflow: hidden;
@@ -579,7 +579,7 @@ main {
     padding 0.3s ease;
 }
 
-.accordion-content.open {
+.presale-accordion-content.open {
   padding: 1em 1.5em;
 }
 
