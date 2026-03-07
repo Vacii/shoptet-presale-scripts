@@ -362,7 +362,6 @@ main {
   font-size: 45px;
   font-weight: 800 !important;
   line-height: 45px;
-  --tw-tracking: -0.025em;
   background-clip: text !important;
   color: transparent;
   text-shadow: none;
@@ -575,7 +574,9 @@ main {
   overflow: hidden;
   background: #f9fafb;
   padding: 0 1.5em;
-  transition: max-height 0.4s ease, padding 0.3s ease;
+  transition:
+    max-height 0.4s ease,
+    padding 0.3s ease;
 }
 
 .accordion-content.open {
