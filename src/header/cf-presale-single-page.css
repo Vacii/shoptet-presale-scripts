@@ -720,3 +720,8 @@ main {
     display: none !important;
   }
 }
+
+.presale-sl-hidden {
+  display: none;
+  margin-top: 0;
+}

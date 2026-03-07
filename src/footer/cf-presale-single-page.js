@@ -223,8 +223,7 @@ function copySinglePageCode() {
 function hideBannerOnClass(className) {
   const element = document.getElementsByClassName(className)[0];
   if (element) {
-    element.style.display = "none";
-    element.style.marginTop = "0";
+    element.classList.add("presale-sl-hidden");
   }
 }
 
