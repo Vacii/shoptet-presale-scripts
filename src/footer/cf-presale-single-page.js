@@ -573,15 +573,15 @@ document.addEventListener("DOMContentLoaded", function () {
    * Initializes and updates the countdown timer.
    * @param {number} countDownDate - End date timestamp in milliseconds.
    */
-  let getCountdown = function (countDownDate) {
-    let now = new Date().getTime();
-    let distance = countDownDate - now;
+  const getCountdown = function (countDownDate) {
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hours = Math.floor(
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
       (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
     document.querySelector(".presale-sl-countdown span").innerHTML =
       days +

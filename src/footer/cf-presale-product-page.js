@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (config) {
-      let presaleProducts = config.presaleProducts || [];
+      const presaleProducts = config.presaleProducts || [];
       if (!presaleProducts[0].visible) return;
 
       const template = shoptet.design.template.name;
@@ -286,15 +286,15 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {number} countDownDateTime - Countdown end timestamp.
    * @param {string} saleCode - Optional sale code to display.
    */
-  let getCatalogCountdown = function (countDownDateTime, saleCode) {
-    let now = new Date().getTime();
-    let distance = countDownDateTime - now;
+  const getCatalogCountdown = function (countDownDateTime, saleCode) {
+    const now = new Date().getTime();
+    const distance = countDownDateTime - now;
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hours = Math.floor(
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
       (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
     const target = document.querySelector(".presale-product-in-catalog");
 
@@ -320,20 +320,20 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {string} code - Discount code.
    * @param {boolean} visible - Whether countdown is in a separate bar.
    */
-  let getCountdown = function (
+  const getCountdown = function (
     countDownDateTime,
     description,
     code,
     visible = false,
   ) {
-    let now = new Date().getTime();
-    let distance = countDownDateTime - now;
+    const now = new Date().getTime();
+    const distance = countDownDateTime - now;
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hours = Math.floor(
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
       (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
     const showDescriptionText = code
       ? `<span class="presale-sale-description">${description}</span> | Kód: <span class="presale-sale-code">${code}</span>
