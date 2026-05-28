@@ -588,7 +588,7 @@ main {
   padding: 1em 1.5em;
 }
 
-@media (min-width: 401px) {
+@media (min-width: 480px) {
   .presale-sl-countdown span {
     font-size: 80px;
     line-height: 80px;
@@ -599,7 +599,7 @@ main {
   }
 }
 
-@media (min-width: 601px) {
+@media (min-width: 768px) {
   .presale-sl-swiper-item-content {
     opacity: 1;
   }
@@ -632,7 +632,7 @@ main {
   }
 }
 
-@media (min-width: 901px) {
+@media (min-width: 992px) {
   .presale-sl-wrapper {
     width: auto;
   }
@@ -682,7 +682,7 @@ main {
   }
 }
 
-@media (min-width: 1281px) {
+@media (min-width: 1200px) {
   main {
     display: revert;
   }

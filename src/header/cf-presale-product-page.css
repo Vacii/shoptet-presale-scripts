@@ -121,7 +121,7 @@
   }
 }
 
-@media (min-width: 501px) {
+@media (min-width: 480px) {
   .presale-tooltiptext {
     width: 300px !important;
   }
