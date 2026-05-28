@@ -18,22 +18,22 @@
  * Copies the presale code to the clipboard and provides visual feedback.
  */
 function copyCode() {
-  const copyText = document.getElementsByClassName("presale-sale-code")[0];
+  const copyText = document.getElementsByClassName('presale-sale-code')[0];
   const code = copyText.innerText;
 
   navigator.clipboard.writeText(code).then(
     function () {
-      const img = document.getElementsByClassName("presale-code-copy-icon")[0];
+      const img = document.getElementsByClassName('presale-code-copy-icon')[0];
       const originalSrc = img.src;
 
       img.src =
-        "https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg";
+        'https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg';
       setTimeout(function () {
         img.src = originalSrc;
       }, 1500);
     },
     function (err) {
-      console.error("Async: Could not copy text: ", err);
+      console.error('Async: Could not copy text: ', err);
     },
   );
 }
@@ -42,10 +42,10 @@ function copyCode() {
  * Main script: checks page type, fetches presale configuration,
  * and modifies the DOM accordingly.
  */
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   if (
-    !["homepage", "category", "productDetail"].includes(
-      getShoptetDataLayer("pageType"),
+    !['homepage', 'category', 'productDetail'].includes(
+      getShoptetDataLayer('pageType'),
     )
   ) {
     return;
@@ -58,21 +58,21 @@ document.addEventListener("DOMContentLoaded", function () {
   ) => {
     if (isPresale) {
       const addToCartBtn = document.querySelector(
-        "button.add-to-cart-button.btn-conversion",
+        'button.add-to-cart-button.btn-conversion',
       );
-      if (addToCartBtn) addToCartBtn.innerHTML = "Předobjednat";
+      if (addToCartBtn) addToCartBtn.innerHTML = 'Předobjednat';
 
       const availabilityLabel = document.querySelector(selector);
       if (availabilityLabel) {
-        availabilityLabel.innerHTML = "Předobjednávka";
-        availabilityLabel.classList.add("presale-orange-text");
+        availabilityLabel.innerHTML = 'Předobjednávka';
+        availabilityLabel.classList.add('presale-orange-text');
 
         if (dismissBgColor) {
-          availabilityLabel.classList.add("presale-bg-transparent");
+          availabilityLabel.classList.add('presale-bg-transparent');
         }
 
         availabilityLabel.insertAdjacentHTML(
-          "afterend",
+          'afterend',
           `
           <span class="presale-info presale-tooltip">
             &#9432;
@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const priceSave = document.querySelector(
-        ".p-final-price-wrapper .price-save",
+        '.p-final-price-wrapper .price-save',
       );
-      if (priceSave) priceSave.classList.add("presale-orange-text");
+      if (priceSave) priceSave.classList.add('presale-orange-text');
     }
   };
 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {boolean} isPresale - Whether product is in presale.
    * @param {string} template - The design template (e.g., 'Classic', 'Samba').
    */
-  const modifyPage = (isPresale, template = "Classic") => {
+  const modifyPage = (isPresale, template = 'Classic') => {
     const content = `
       <div class="presale-wrapper">
         <div class="presale-bar presale-bar-first">
@@ -103,51 +103,42 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
-    if (template === "Classic") {
+    if (template === 'Classic') {
       document
-        .querySelector(".add-to-cart")
-        ?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications("span.availability-label", isPresale);
-    } else if (template === "Samba") {
+        .querySelector('.add-to-cart')
+        ?.insertAdjacentHTML('afterend', content);
+      applyPresaleLabelModifications('span.availability-label', isPresale);
+    } else if (template === 'Samba') {
       document
-        .querySelector(".p-price-wrapper")
-        ?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications("span.availability-label", isPresale);
-    } else if (template === "Step") {
+        .querySelector('.p-price-wrapper')
+        ?.insertAdjacentHTML('afterend', content);
+      applyPresaleLabelModifications('span.availability-label', isPresale);
+    } else if (template === 'Step') {
       document
-        .querySelector(".p-basic-info-block")
-        ?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications(
-        'span[data-testid="labelAvailability"]',
-        isPresale,
-      );
-    } else if (template === "Tango") {
+        .querySelector('.p-basic-info-block')
+        ?.insertAdjacentHTML('afterend', content);
+      applyPresaleLabelModifications('span.availability-label', isPresale);
+    } else if (template === 'Tango') {
       document
-        .querySelector(".p-short-description")
-        ?.insertAdjacentHTML("afterend", content);
+        .querySelector('.p-short-description')
+        ?.insertAdjacentHTML('afterend', content);
       if (isPresale) {
-        applyPresaleLabelModifications(
-          'span[data-testid="labelAvailability"]',
-          isPresale,
-        );
+        applyPresaleLabelModifications('span.availability-label', isPresale);
       }
-    } else if (template === "Techno") {
+    } else if (template === 'Techno') {
       document
-        .querySelector(".detail-parameters.second")
-        ?.insertAdjacentHTML("afterend", content);
+        .querySelector('.detail-parameters.second')
+        ?.insertAdjacentHTML('afterend', content);
       applyPresaleLabelModifications(
-        'span[data-testid="labelAvailability"]',
+        'span.availability-label',
         isPresale,
         true,
       );
-    } else if (template === "Disco") {
+    } else if (template === 'Disco') {
       document
-        .querySelector(".detail-parameters")
-        ?.insertAdjacentHTML("afterend", content);
-      applyPresaleLabelModifications(
-        'span[data-testid="labelAvailability"]',
-        isPresale,
-      );
+        .querySelector('.p-detail-inner .detail-parameters')
+        ?.insertAdjacentHTML('afterend', content);
+      applyPresaleLabelModifications('span.availability-label', isPresale);
     }
   };
 
@@ -162,31 +153,27 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     if (!product) return;
 
-    const targetAnchor = product.querySelector(".p-in-in a");
+    const targetAnchor = product.querySelector('.p-in-in a');
     if (!targetAnchor) return;
 
-    const newWrapperDiv = document.createElement("div");
-    newWrapperDiv.className = "presale-product-in-catalog-wrapper";
+    const newWrapperDiv = document.createElement('div');
+    newWrapperDiv.className = 'presale-product-in-catalog-wrapper';
 
-    const newDiv = document.createElement("div");
-    newDiv.className = "presale-product-in-catalog";
+    const newDiv = document.createElement('div');
+    newDiv.className = 'presale-product-in-catalog';
 
-    targetAnchor.insertAdjacentElement("afterend", newWrapperDiv);
+    targetAnchor.insertAdjacentElement('afterend', newWrapperDiv);
     newWrapperDiv.appendChild(newDiv);
 
     if (isPresale) {
-      let stockLabel = null;
-      const availabilitySpans = product.querySelectorAll(".availability span");
-      for (const span of availabilitySpans) {
-        if (span.textContent.trim() === "Skladem") {
-          stockLabel = span;
-          break;
-        }
-      }
+      const availabilitySpans = product.querySelectorAll('.availability span');
+      const stockLabel = Array.from(availabilitySpans).find(
+        (span) => span.textContent.trim() === 'Skladem',
+      );
 
       if (stockLabel) {
-        stockLabel.textContent = "Předprodej";
-        stockLabel.classList.add("presale-orange-text");
+        stockLabel.textContent = 'Předprodej';
+        stockLabel.classList.add('presale-orange-text');
       }
     }
   };
@@ -198,17 +185,17 @@ document.addEventListener("DOMContentLoaded", function () {
    * Loads configuration and applies presale modifications.
    */
   (async function () {
-    const projectId = getShoptetDataLayer("projectId");
-    const productGuid = getShoptetDataLayer("product")?.guid;
+    const projectId = getShoptetDataLayer('projectId');
+    const productGuid = getShoptetDataLayer('product')?.guid;
 
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
     )
       .then((response) => response.json())
-      .catch((error) => console.error("Error fetching JSON:", error));
+      .catch((error) => console.error('Error fetching JSON:', error));
 
     if (
-      getShoptetDataLayer("pageType") === "productDetail" &&
+      getShoptetDataLayer('pageType') === 'productDetail' &&
       (config.presaleProducts.length === 0 ||
         config.presaleProducts[0].guid !== productGuid)
     ) {
@@ -221,12 +208,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const template = shoptet.design.template.name;
 
-      if (getShoptetDataLayer("pageType") === "productDetail") {
+      if (getShoptetDataLayer('pageType') === 'productDetail') {
         modifyPage(presaleProducts[0].presale, template);
         document
-          .querySelector(".presale-first-bar-content")
-          .addEventListener("click", function (e) {
-            if (e.target.closest(".presale-code-copy-btn")) {
+          .querySelector('.presale-first-bar-content')
+          .addEventListener('click', function (e) {
+            if (e.target.closest('.presale-code-copy-btn')) {
               copyCode();
             }
           });
@@ -243,8 +230,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       presaleProducts.forEach((presaleProduct) => {
         if (presaleProduct.guid === productGuid) {
-          document.querySelector(".presale-bar-first").insertAdjacentHTML(
-            "afterend",
+          document.querySelector('.presale-bar-first').insertAdjacentHTML(
+            'afterend',
             `
               <div class="presale-bar presale-bar-second">
                 <div class="presale-second-bar-content"><p></p></div>
@@ -252,9 +239,9 @@ document.addEventListener("DOMContentLoaded", function () {
             `,
           );
 
-          document.querySelector(".presale-tooltiptext").innerHTML =
+          document.querySelector('.presale-tooltiptext').innerHTML =
             presaleProduct.info ||
-            "Tento produkt se dá předobjednat. Odešleme ho hned, jakmile bude dostupný.";
+            'Tento produkt se dá předobjednat. Odešleme ho hned, jakmile bude dostupný.';
 
           const presaleEndDateTime = new Date(presaleProduct.endDate).getTime();
           const description =
@@ -296,19 +283,17 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-    const target = document.querySelector(".presale-product-in-catalog");
+    const target = document.querySelector('.presale-product-in-catalog');
 
     if (distance < 0) {
-      target.innerHTML = "Předobjednávka skončila";
+      target.innerHTML = 'Předobjednávka skončila';
       clearInterval(catalogTimer);
       return;
     }
 
-    let countdownHtml = `<span>${days}d <span class="pulse">:</span> ${hours}h <span class="pulse">:</span> ${minutes}m</span>`;
-
-    if (saleCode) {
-      countdownHtml += `<span> <span class="presale-product-separator">|</span> Kód: <span class="presale-sale-code">${saleCode}</span></span>`;
-    }
+    const countdownHtml = saleCode
+      ? `<span>${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m</span><span> <span class="presale-product-separator">|</span> Kód: <span class="presale-sale-code">${saleCode}</span></span>`
+      : `<span>${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m</span>`;
 
     target.innerHTML = countdownHtml;
   };
@@ -341,21 +326,21 @@ document.addEventListener("DOMContentLoaded", function () {
       : description;
 
     if (visible === true) {
-      document.querySelector(".presale-second-bar-content p").innerHTML =
-        `${days}d <span class="pulse">:</span> ${hours}h <span class="pulse">:</span> ${minutes}m`;
-      document.querySelector(".presale-first-bar-content p").innerHTML =
+      document.querySelector('.presale-second-bar-content p').innerHTML =
+        `${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
+      document.querySelector('.presale-first-bar-content p').innerHTML =
         showDescriptionText;
       if (distance < 0) {
-        document.querySelector(".presale-second-bar-content p").innerHTML =
-          "Předobjednávka skončila";
+        document.querySelector('.presale-second-bar-content p').innerHTML =
+          'Předobjednávka skončila';
         clearInterval(productDetailTimer);
       }
     } else {
-      document.querySelector(".presale-first-bar-content p").innerHTML =
-        `${showDescriptionText} | Končí za ${days}d <span class="pulse">:</span> ${hours}h <span class="pulse">:</span> ${minutes}m`;
+      document.querySelector('.presale-first-bar-content p').innerHTML =
+        `${showDescriptionText} | Končí za ${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
       if (distance < 0) {
-        document.querySelector(".presale-first-bar-content p").innerHTML =
-          "Předobjednávka skončila";
+        document.querySelector('.presale-first-bar-content p').innerHTML =
+          'Předobjednávka skončila';
         clearInterval(productDetailTimer);
       }
     }

@@ -63,7 +63,7 @@ main {
   transform: translateX(-50%);
   background-color: black;
   color: white;
-  font-size: small;
+  font-size: 13px;
   padding: 10px 20px;
   border-radius: 20px;
   text-decoration: none;
@@ -235,7 +235,7 @@ main {
 }
 
 .presale-sl-rating-number {
-  font-size: large;
+  font-size: 18px;
   color: darkgray;
 }
 
@@ -290,7 +290,7 @@ main {
 }
 
 .presale-sl-sale-bar img {
-  font-size: large;
+  font-size: 18px;
   font-weight: bold;
   padding-left: 6px;
   color: #fff;
@@ -467,13 +467,13 @@ main {
 .presale-sl-swiper-item h4,
 .presale-sl-swiper-item p,
 .presale-sl-swiper-item a {
-  font-size: x-small;
+  font-size: 10px;
 }
 
 .swiper-slide-next h4,
 .swiper-slide-next p,
 .swiper-slide-next a {
-  font-size: medium;
+  font-size: 16px;
 }
 
 .swiper-slide-next img {
@@ -607,7 +607,7 @@ main {
   .presale-sl-swiper-item h4,
   .presale-sl-swiper-item p,
   .presale-sl-swiper-item a {
-    font-size: small;
+    font-size: 13px;
   }
 
   .presale-sl-swiper-item-img {

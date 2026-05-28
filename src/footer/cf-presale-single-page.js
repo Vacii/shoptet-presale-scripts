@@ -10,10 +10,8 @@
  * For support or inquiries, please contact: lv.vaclavek@gmail.com
  */
 
-/**
- * HTML template string used to populate the presale landing page content.
- */
-const presaleContent = `
+const presaleTemplate = document.createElement('template');
+presaleTemplate.innerHTML = `
   <div class="presale-sl-wrapper">
     <div class="presale-sl-title-banner">
     </div>
@@ -93,84 +91,8 @@ const presaleContent = `
           </div>
 
         </div>
-    <!-- Slider main container -->
     <div class="swiper mySwiper">
       <div class="swiper-wrapper">
-        <div class="swiper-slide presale-sl-swiper-item">
-          <div class="presale-sl-swiper-item-content">
-            <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product2.webp" alt="Náhled produktu" />
-            </div>
-            <div class="presale-sl-swiper-product-info">
-              <h4>Nazev produktu</h4>
-              <p>69 Kč</p>
-              <a
-                href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                >Detail</a
-              >
-            </div>
-          </div>
-        </div>
-        <div class="swiper-slide presale-sl-swiper-item">
-          <div class="presale-sl-swiper-item-content">
-            <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product3.webp" alt="Náhled produktu" />
-            </div>
-            <div class="presale-sl-swiper-product-info">
-              <h4>Nazev produktu</h4>
-              <p>69 Kč</p>
-              <a
-                href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                >Detail</a
-              >
-            </div>
-          </div>
-        </div>
-        <div class="swiper-slide presale-sl-swiper-item">
-          <div class="presale-sl-swiper-item-content">
-            <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product1.webp" alt="Náhled produktu" />
-            </div>
-            <div class="presale-sl-swiper-product-info">
-              <h4>Nazev produktu</h4>
-              <p>69 Kč</p>
-              <a
-                href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                >Detail</a
-              >
-            </div>
-          </div>
-        </div>
-        <div class="swiper-slide presale-sl-swiper-item">
-          <div class="presale-sl-swiper-item-content">
-            <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product2.webp" alt="Náhled produktu" />
-            </div>
-            <div class="presale-sl-swiper-product-info">
-              <h4>Nazev produktu</h4>
-              <p>69 Kč</p>
-              <a
-                href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                >Detail</a
-              >
-            </div>
-          </div>
-        </div>
-        <div class="swiper-slide presale-sl-swiper-item">
-          <div class="presale-sl-swiper-item-content">
-            <div class="presale-sl-swiper-item-img">
-              <img src="./Plain - Page_files/product3.webp" alt="Náhled produktu" />
-            </div>
-            <div class="presale-sl-swiper-product-info">
-              <h4>Nazev produktu</h4>
-              <p>69 Kč</p>
-              <a
-                href="https://697363.myshoptet.com/stolni-lampicka-tiny-tim/"
-                >Detail</a
-              >
-            </div>
-          </div>
-        </div>
       </div>
       <button class="swiper-button-next"></button>
       <button class="swiper-button-prev"></button>
@@ -193,25 +115,25 @@ const presaleContent = `
  * Changes the icon to a checkmark temporarily to indicate success.
  */
 function copySinglePageCode() {
-  const copyText = document.getElementsByClassName("presale-sl-sale-code")[0];
+  const copyText = document.getElementsByClassName('presale-sl-sale-code')[0];
   const code = copyText.innerText;
 
   navigator.clipboard.writeText(code).then(
     function () {
       const img = document.getElementsByClassName(
-        "presale-sl-sale-code-copy-icon",
+        'presale-sl-sale-code-copy-icon',
       )[0];
 
       const originalSrc = img.src;
 
       img.src =
-        "https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg";
+        'https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg';
       setTimeout(function () {
         img.src = originalSrc;
       }, 1500);
     },
     function (err) {
-      console.error("Async: Could not copy text: ", err);
+      console.error('Async: Could not copy text: ', err);
     },
   );
 }
@@ -223,7 +145,7 @@ function copySinglePageCode() {
 function hideBannerOnClass(className) {
   const element = document.getElementsByClassName(className)[0];
   if (element) {
-    element.classList.add("presale-sl-hidden");
+    element.classList.add('presale-sl-hidden');
   }
 }
 
@@ -233,76 +155,78 @@ function hideBannerOnClass(className) {
  * @param {string} productUrl - Optional redirect link.
  * @param {string} altText - Alternate text for accessibility.
  */
-function updateBanner(mediaUrl, productUrl = "#", altText = "") {
-  const videoExtensions = [".mp4", ".webm", ".ogg"];
-  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
+function updateBanner(mediaUrl, productUrl = '#', altText = '') {
+  const videoExtensions = ['.mp4', '.webm', '.ogg'];
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
-  const container = document.querySelector(".presale-sl-title-banner");
+  const container = document.querySelector('.presale-sl-title-banner');
   if (!container) return;
 
-  container.innerHTML = ""; // Clear previous content
+  container.innerHTML = ''; // Clear previous content
 
   const lowerUrl = mediaUrl.toLowerCase();
 
   if (videoExtensions.some((ext) => lowerUrl.endsWith(ext))) {
-    const video = document.createElement("video");
+    const video = document.createElement('video');
     video.loop = true;
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    video.setAttribute("alt", altText);
-    video.className = "lazyloaded";
+    video.setAttribute('alt', altText);
+    video.className = 'lazyloaded';
 
-    const source = document.createElement("source");
-    source.className = "presale-sl-variable-title-banner";
-    source.setAttribute("type", "video/mp4");
-    source.setAttribute("src", mediaUrl);
+    const source = document.createElement('source');
+    source.className = 'presale-sl-variable-title-banner';
+    source.setAttribute('type', 'video/mp4');
+    source.setAttribute('src', mediaUrl);
 
     video.appendChild(source);
     container.appendChild(video);
   } else if (imageExtensions.some((ext) => lowerUrl.endsWith(ext))) {
-    const img = document.createElement("img");
-    img.className = "presale-sl-variable-title-banner lazyloaded";
-    img.setAttribute("src", mediaUrl);
-    img.setAttribute("alt", altText);
+    const img = document.createElement('img');
+    img.className = 'presale-sl-variable-title-banner lazyloaded';
+    img.setAttribute('src', mediaUrl);
+    img.setAttribute('alt', altText);
     container.appendChild(img);
   } else {
-    console.warn("Unsupported media format:", mediaUrl);
+    console.warn('Unsupported media format:', mediaUrl);
     return;
   }
 
-  const link = document.createElement("a");
-  link.className = "presale-sl-title-banner-link";
-  link.setAttribute("href", productUrl);
-  link.textContent = "Detail";
+  const link = document.createElement('a');
+  link.className = 'presale-sl-title-banner-link';
+  link.setAttribute('href', productUrl);
+  link.textContent = 'Detail';
 
   container.appendChild(link);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   /**
    * Fetches and renders dynamic configuration from the CustomerFlow backend
    * based on the Shoptet project ID extracted from the `dataLayer`.
    */
   async function loadSource() {
-    const projectId = getShoptetDataLayer("projectId");
+    const projectId = getShoptetDataLayer('projectId');
 
     const config = await fetch(
       `https://customerflow.cz/shoptet/presell/config?clientId=${projectId}`,
     )
       .then((response) => response.json())
-      .catch((error) => console.error("Error fetching JSON:", error));
+      .catch((error) => console.error('Error fetching JSON:', error));
 
     if (config.soloLanding[0].url !== window.location.href) return;
 
-    document.querySelector('div[itemprop="about"]').innerHTML = presaleContent;
+    const aboutContainer = document.querySelector('div[itemprop="about"]');
+    aboutContainer.innerHTML = '';
+    aboutContainer.appendChild(presaleTemplate.content.cloneNode(true));
     document
-      .querySelector(".presale-sl-sale-code-copy-btn")
-      .addEventListener("click", copySinglePageCode);
+      .querySelector('.presale-sl-sale-code-copy-btn')
+      .addEventListener('click', copySinglePageCode);
     document
-      .getElementsByClassName("content-inner")[0]
-      .classList.add("presale-content-inner-full");
-    document.getElementById("content").classList.add("presale-content-start");
+      .getElementsByClassName('content-inner')[0]
+      .classList.add('presale-content-inner-full');
+    document.getElementById('content').classList.add('presale-content-start');
 
     const landingConfig = config.soloLanding[0];
 
@@ -311,90 +235,90 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     landingConfig.components.forEach((component) => {
       switch (component.name) {
-        case "titleBanner":
+        case 'titleBanner':
           updateBanner(component.src, component.redirectUrl, component.alt);
 
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-title-banner");
+            hideBannerOnClass('presale-sl-title-banner');
             return;
           }
 
           break;
-        case "benefitFirst":
+        case 'benefitFirst':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-benefit-first");
+            hideBannerOnClass('presale-sl-benefit-first');
             return;
           }
           const firstBenefitImage = document.querySelector(
-            ".preslae-sl-variable-benefit-first",
+            '.preslae-sl-variable-benefit-first',
           );
           firstBenefitImage.src = component.src;
-          document.querySelector(".presale-sl-benefit-first").href =
+          document.querySelector('.presale-sl-benefit-first').href =
             component.redirectUrl;
 
-          firstBenefitImage.setAttribute("alt", component.alt || "");
+          firstBenefitImage.setAttribute('alt', component.alt || '');
           break;
-        case "benefitSecond":
+        case 'benefitSecond':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-benefit-second");
+            hideBannerOnClass('presale-sl-benefit-second');
             return;
           }
           const secondBenefitImage = document.querySelector(
-            ".preslae-sl-variable-benefit-second",
+            '.preslae-sl-variable-benefit-second',
           );
           secondBenefitImage.src = component.src;
-          document.querySelector(".presale-sl-benefit-second").href =
+          document.querySelector('.presale-sl-benefit-second').href =
             component.redirectUrl;
 
-          secondBenefitImage.setAttribute("alt", component.alt || "");
+          secondBenefitImage.setAttribute('alt', component.alt || '');
           break;
-        case "benefitBanner":
+        case 'benefitBanner':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-sub-banner");
+            hideBannerOnClass('presale-sl-sub-banner');
             return;
           }
           const benefitBanner = document.querySelector(
-            ".presale-sl-variable-benefit-banner",
+            '.presale-sl-variable-benefit-banner',
           );
           benefitBanner.src = component.src;
-          document.querySelector(".presale-sl-sub-banner").href =
+          document.querySelector('.presale-sl-sub-banner').href =
             component.redirectUrl;
 
-          benefitBanner.setAttribute("alt", component.alt || "");
+          benefitBanner.setAttribute('alt', component.alt || '');
           break;
-        case "compareBanner":
+        case 'compareBanner':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-compare-banner");
+            hideBannerOnClass('presale-sl-compare-banner');
             return;
           }
           const compareBanner = document.querySelector(
-            ".presale-sl-variable-compare-desktop",
+            '.presale-sl-variable-compare-desktop',
           );
           compareBanner.src = component.src;
-          document.querySelector(".presale-sl-compare-banner").href =
+          document.querySelector('.presale-sl-compare-banner').href =
             component.redirectUrl;
 
-          compareBanner.setAttribute("alt", component.alt || "");
+          compareBanner.setAttribute('alt', component.alt || '');
           break;
-        case "usps":
+        case 'usps':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-usp");
+            hideBannerOnClass('presale-sl-usp');
             return;
           }
-          const uspsContainer = document.querySelector(".presale-sl-usp");
+          const uspsContainer = document.querySelector('.presale-sl-usp');
           component.src.forEach((item, index) => {
-            const uspItem = document.createElement("a");
-            uspItem.classList.add("presale-sl-usp-item");
+            const uspItem = document.createElement('a');
+            uspItem.classList.add('presale-sl-usp-item');
 
             if (item.redirectUrl) {
-              uspItem.setAttribute("href", item.redirectUrl);
+              uspItem.setAttribute('href', item.redirectUrl);
             }
 
-            const uspImg = document.createElement("img");
-            uspImg.setAttribute("src", item.src);
-            uspImg.setAttribute("alt", item.alt);
+            const uspImg = document.createElement('img');
+            uspImg.setAttribute('src', item.src);
+            uspImg.setAttribute('alt', item.alt);
 
-            const uspText = document.createElement("p");
+            const uspText = document.createElement('p');
             uspText.classList.add(
               `preslae-sl-variable-usp-item-${index + 1}-text`,
             );
@@ -405,25 +329,25 @@ document.addEventListener("DOMContentLoaded", function () {
             uspsContainer.appendChild(uspItem);
           });
           break;
-        case "ugcs":
+        case 'ugcs':
           if (!component.visible) {
-            hideBannerOnClass("desktopSwiper");
-            hideBannerOnClass("presale-sl-ugcs-mobile");
+            hideBannerOnClass('desktopSwiper');
+            hideBannerOnClass('presale-sl-ugcs-mobile');
             return;
           }
           const ugcContainer = document.querySelector(
-            ".desktopSwiper .swiper-wrapper",
+            '.desktopSwiper .swiper-wrapper',
           );
 
           component.src.forEach((item) => {
-            const ugcItem = document.createElement("div");
-            ugcItem.classList.add("swiper-slide", "presale-sl-swiper-item");
+            const ugcItem = document.createElement('div');
+            ugcItem.classList.add('swiper-slide', 'presale-sl-swiper-item');
 
-            const video = document.createElement("video");
-            video.setAttribute("controls", "");
-            const source = document.createElement("source");
-            source.setAttribute("type", "video/mp4");
-            source.setAttribute("src", item.src);
+            const video = document.createElement('video');
+            video.setAttribute('controls', '');
+            const source = document.createElement('source');
+            source.setAttribute('type', 'video/mp4');
+            source.setAttribute('src', item.src);
 
             ugcContainer.appendChild(ugcItem);
             video.appendChild(source);
@@ -435,25 +359,25 @@ document.addEventListener("DOMContentLoaded", function () {
           });
 
           const ugcMobileContainer = document.querySelector(
-            ".cardSwiper .swiper-wrapper",
+            '.cardSwiper .swiper-wrapper',
           );
           component.src.forEach((item) => {
-            const ugcMobileItem = document.createElement("div");
+            const ugcMobileItem = document.createElement('div');
 
             ugcMobileItem.classList.add(
-              "swiper-slide",
-              "presale-sl-swiper-slide",
+              'swiper-slide',
+              'presale-sl-swiper-slide',
             );
 
-            const videoMobile = document.createElement("video");
-            videoMobile.setAttribute("controls", "");
+            const videoMobile = document.createElement('video');
+            videoMobile.setAttribute('controls', '');
 
             if (item.alt) {
-              videoMobile.setAttribute("alt", item.alt);
+              videoMobile.setAttribute('alt', item.alt);
             }
-            const sourceMobile = document.createElement("source");
-            sourceMobile.setAttribute("type", "video/mp4");
-            sourceMobile.setAttribute("src", item.src);
+            const sourceMobile = document.createElement('source');
+            sourceMobile.setAttribute('type', 'video/mp4');
+            sourceMobile.setAttribute('src', item.src);
 
             ugcMobileContainer.appendChild(ugcMobileItem);
             videoMobile.appendChild(sourceMobile);
@@ -464,65 +388,106 @@ document.addEventListener("DOMContentLoaded", function () {
             videoMobile.muted = true;
           });
 
-          new Swiper(".desktopSwiper", {
+          new Swiper('.desktopSwiper', {
             slidesPerView: 2,
             spaceBetween: 0,
             loop: true,
             navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
             },
           });
 
-          new Swiper(".cardSwiper", {
-            effect: "cards",
+          new Swiper('.cardSwiper', {
+            effect: 'cards',
             grabCursor: true,
             navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
             },
           });
           break;
-        case "saleBanner":
+        case 'saleBanner':
           if (!component.visible) {
-            hideBannerOnClass("presale-sl-sale-bar");
+            hideBannerOnClass('presale-sl-sale-bar');
             return;
           }
-          document.getElementsByClassName("presale-sl-sale-span")[0].innerText =
+          document.getElementsByClassName('presale-sl-sale-span')[0].innerText =
             component.description;
-          document.getElementsByClassName("presale-sl-sale-code")[0].innerText =
+          document.getElementsByClassName('presale-sl-sale-code')[0].innerText =
             component.code;
           break;
-        case "productCarousel":
+        case 'productCarousel':
           if (!component.visible) {
-            hideBannerOnClass("mySwiper");
+            hideBannerOnClass('mySwiper');
             return;
           }
-          break;
-        case "countdown":
-          if (!component.visible) {
-            hideBannerOnClass("presale-sl-countdown");
-            return;
-          }
-          break;
-        case "accordion":
-          if (!component.visible) {
-            hideBannerOnClass("presale-accordion-wrapper");
-            return;
-          }
-          const accordion = document.querySelector(".presale-accordion");
-          component.description.forEach((item) => {
-            const accordionItem = document.createElement("div");
-            accordionItem.classList.add("presale-accordion-item");
+          const carouselWrapper = document.querySelector(
+            '.mySwiper .swiper-wrapper',
+          );
+          component.src.forEach((product) => {
+            const slide = document.createElement('div');
+            slide.classList.add('swiper-slide', 'presale-sl-swiper-item');
 
-            const accordionHeader = document.createElement("div");
-            accordionHeader.classList.add("presale-accordion-header");
+            const content = document.createElement('div');
+            content.classList.add('presale-sl-swiper-item-content');
+
+            const imgWrapper = document.createElement('div');
+            imgWrapper.classList.add('presale-sl-swiper-item-img');
+
+            const img = document.createElement('img');
+            img.setAttribute('src', product.src);
+            img.setAttribute('alt', product.alt || 'Náhled produktu');
+
+            const info = document.createElement('div');
+            info.classList.add('presale-sl-swiper-product-info');
+
+            const title = document.createElement('h4');
+            title.textContent = product.name;
+
+            const price = document.createElement('p');
+            price.textContent = product.price;
+
+            const link = document.createElement('a');
+            link.classList.add('btn', 'btn-primary');
+            link.setAttribute('href', product.redirectUrl);
+            link.textContent = 'Detail';
+
+            info.appendChild(title);
+            info.appendChild(price);
+            info.appendChild(link);
+
+            imgWrapper.appendChild(img);
+            content.appendChild(imgWrapper);
+            content.appendChild(info);
+            slide.appendChild(content);
+            carouselWrapper.appendChild(slide);
+          });
+          break;
+        case 'countdown':
+          if (!component.visible) {
+            hideBannerOnClass('presale-sl-countdown');
+            return;
+          }
+          break;
+        case 'accordion':
+          if (!component.visible) {
+            hideBannerOnClass('presale-accordion-wrapper');
+            return;
+          }
+          const accordion = document.querySelector('.presale-accordion');
+          component.description.forEach((item) => {
+            const accordionItem = document.createElement('div');
+            accordionItem.classList.add('presale-accordion-item');
+
+            const accordionHeader = document.createElement('div');
+            accordionHeader.classList.add('presale-accordion-header');
             accordionHeader.innerHTML =
               item.question + '<span class="presale-accordion-icon">▼</span>';
 
-            const accordionContent = document.createElement("div");
-            accordionContent.classList.add("presale-accordion-content");
-            const accordionInner = document.createElement("div");
+            const accordionContent = document.createElement('div');
+            accordionContent.classList.add('presale-accordion-content');
+            const accordionInner = document.createElement('div');
             accordionInner.innerText = item.answer;
             accordionContent.appendChild(accordionInner);
 
@@ -532,22 +497,22 @@ document.addEventListener("DOMContentLoaded", function () {
           });
 
           document
-            .querySelectorAll(".presale-accordion-header")
+            .querySelectorAll('.presale-accordion-header')
             .forEach((header) => {
-              header.addEventListener("click", () => {
+              header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
-                const isOpen = content.classList.contains("open");
+                const isOpen = content.classList.contains('open');
 
                 document
-                  .querySelectorAll(".presale-accordion-content")
+                  .querySelectorAll('.presale-accordion-content')
                   .forEach((c) => {
-                    c.classList.remove("open");
-                    c.previousElementSibling.classList.remove("active");
+                    c.classList.remove('open');
+                    c.previousElementSibling.classList.remove('active');
                   });
 
                 if (!isOpen) {
-                  content.classList.add("open");
-                  header.classList.add("active");
+                  content.classList.add('open');
+                  header.classList.add('active');
                 }
               });
             });
@@ -566,7 +531,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document
       .querySelector('header[itemprop="headline"]')
-      .classList.add("presale-headline-flex");
+      .classList.add('presale-headline-flex');
   }
 
   /**
@@ -583,40 +548,40 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-    document.querySelector(".presale-sl-countdown span").innerHTML =
+    document.querySelector('.presale-sl-countdown span').innerHTML =
       days +
       'd <span class="presale-sl-pulse">:</span> ' +
       hours +
       'h <span class="presale-sl-pulse">:</span> ' +
       minutes +
-      "min";
+      'min';
 
     if (distance < 0) {
       clearInterval(countdownTimer);
-      document.querySelector(".presale-sl-countdown span").innerHTML =
-        "Sleva skončila";
+      document.querySelector('.presale-sl-countdown span').innerHTML =
+        'Sleva skončila';
     }
   };
 
   /**
    * Only proceed if we are on the allowed page type (e.g., article).
    */
-  if (!["article"].includes(getShoptetDataLayer("pageType"))) {
+  if (!['article'].includes(getShoptetDataLayer('pageType'))) {
     return;
   }
 
-  document.getElementById("content")?.classList.add("presale-sl-main");
+  document.getElementById('content')?.classList.add('presale-sl-main');
 
   let countdownTimer;
   loadSource();
 
-  new Swiper(".mySwiper", {
+  new Swiper('.mySwiper', {
     slidesPerView: 3,
     spaceBetween: 0,
     loop: true,
     navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
     },
   });
 });

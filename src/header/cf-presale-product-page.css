@@ -38,7 +38,7 @@
 }
 
 .presale-code-copy-icon {
-    font-size: large;
+    font-size: 18px;
     height: 15px;
     font-weight: bold;
     padding-left: 6px;
@@ -75,7 +75,7 @@
   visibility: visible;
 }
 
-.pulse {
+.presale-pulse {
   animation: blink 1.5s infinite;
 }
 
