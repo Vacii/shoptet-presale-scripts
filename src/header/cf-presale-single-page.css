@@ -1,0 +1,745 @@
+/* Plain - Page Styles */
+
+main {
+  display: block;
+}
+
+.presale-sl-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 16px;
+  background-color: #f5f5f5;
+}
+
+.presale-sl-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1050px;
+  width: 90%;
+  overflow: hidden;
+}
+
+.presale-sl-title-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  width: 90%;
+  height: 18em;
+  border-radius: 20px;
+  background-color: #333;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.presale-sl-title-banner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.presale-sl-title-banner img.presale-sl-variable-title-banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.presale-sl-title-banner a {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  color: white;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+  border: 1px solid transparent;
+}
+
+.presale-sl-title-banner a:hover {
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid black;
+}
+
+.presale-sl-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2em;
+}
+
+.presale-sl-benefits-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  width: 90%;
+}
+
+.presale-sl-benefit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #f5f5f5;
+  width: 100%;
+  height: 18em;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.presale-sl-main-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.presale-sl-compare-banner {
+  width: 90%;
+  min-height: 15em;
+  background-color: #333;
+  border-radius: 20px;
+  margin-top: 2em;
+  overflow: hidden;
+}
+
+.presale-sl-compare-banner img {
+  width: 100%;
+  height: auto;
+}
+
+.presale-sl-sub-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  min-height: 15em;
+  border-radius: 20px;
+  margin-top: 2em;
+  overflow: hidden;
+  background-color: #333;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.presale-sl-usp {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  gap: 2em;
+  margin-top: 2em;
+}
+
+.presale-sl-usp p {
+  text-align: center;
+}
+
+.presale-sl-usp-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 12em;
+  overflow: hidden;
+}
+
+.presale-sl-usp-item p {
+  color: #333;
+}
+
+.presale-sl-ugc {
+  background-color: #333;
+  color: #f5f5f5;
+  width: 100%;
+  height: 30em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+}
+
+.presale-sl-ugcs {
+  flex-direction: column;
+  gap: 2em;
+}
+
+.desktopSwiper {
+  margin-top: 2em;
+  width: 90%;
+  display: none !important;
+}
+
+.presale-sl-swiper-ugc-button-next {
+  padding-left: 10px;
+}
+
+.presale-sl-swiper-ugc-button-prev {
+  padding-right: 10px;
+}
+
+.presale-sl-usp-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.presale-sl-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+  gap: 2em;
+}
+
+.presale-sl-rating-stars {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.presale-sl-rating-stars img {
+  width: 30px;
+  height: 30px;
+}
+
+.presale-sl-rating-out-of-5 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.presale-sl-rating-number {
+  font-size: 18px;
+  color: darkgray;
+}
+
+.presale-sl-compare {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+  width: 80%;
+  gap: 2em;
+}
+
+.presale-sl-compare span {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.presale-sl-compare-item {
+  width: 100%;
+}
+
+.presale-sl-sale-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ff3131;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 49, 49, 1) 0%,
+    rgba(255, 145, 77, 1) 100%
+  );
+  width: 100%;
+  border-radius: 20px;
+  margin-top: 2em;
+}
+
+.presale-sl-sale-line {
+  display: none;
+}
+
+.presale-sl-sale-bar-code-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.presale-sl-sale-bar-code-wrapper .presale-sl-sale-span {
+  padding-top: 0 !important;
+  padding-bottom: 1em;
+}
+
+.presale-sl-sale-bar img {
+  font-size: 18px;
+  font-weight: bold;
+  padding-left: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.presale-sl-sale-bar .presale-sl-sale-span {
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
+  padding: 1em 0;
+}
+
+.presale-sl-sale-tooltip {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 20px;
+}
+
+.presale-sl-sale-tooltip .presale-sl-tooltip-text {
+  display: none;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: -15%;
+  left: 130%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.presale-sl-sale-tooltip:hover .presale-sl-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.presale-sl-countdown {
+  margin-top: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.presale-sl-pulse {
+  font-size: 16px;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.presale-sl-countdown span {
+  font-size: 45px;
+  font-weight: 800 !important;
+  line-height: 45px;
+  background-clip: text !important;
+  color: transparent;
+  text-shadow: none;
+  background: #ff3131;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 49, 49, 1) 0%,
+    rgba(255, 145, 77, 1) 100%
+  );
+}
+
+/* SLIDER */
+.mySwiper {
+  display: none !important;
+  width: 100%;
+  height: 15em;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.presale-sl-swiper-item {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.presale-sl-swiper-item-content {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.6;
+  width: 100%;
+}
+
+.swiper-slide-next .presale-sl-swiper-item-content {
+  opacity: 1;
+}
+
+.presale-sl-swiper-item-img {
+  width: 4em;
+  height: 4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide-next .presale-sl-swiper-item-img {
+  width: 8em;
+  height: 8em;
+}
+
+.presale-sl-swiper-item img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.presale-sl-swiper-product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.presale-sl-swiper-product-info > * {
+  margin: 0;
+}
+
+.presale-sl-swiper-item a {
+  background-color: black;
+  border: 1px solid transparent;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.presale-sl-swiper-item a:hover {
+  background-color: whitesmoke;
+  border: 1px solid black;
+  color: black;
+}
+
+.presale-sl-swiper-item h4,
+.presale-sl-swiper-item p,
+.presale-sl-swiper-item a {
+  font-size: 10px;
+}
+
+.swiper-slide-next h4,
+.swiper-slide-next p,
+.swiper-slide-next a {
+  font-size: 16px;
+}
+
+.swiper-slide-next img {
+  width: auto;
+  height: auto;
+}
+
+.cardSwiper {
+  width: 15em;
+  height: 30em;
+  max-width: 300px;
+  display: block !important;
+}
+
+.presale-sl-swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.swiper-slide-visible {
+  background-color: #ff0000;
+}
+
+.desktopSwiper video {
+  width: 17em;
+  height: 30em;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
+}
+
+.presale-sl-ugcs-mobile {
+  margin: auto;
+  width: 70%;
+}
+
+.presale-sl-ugcs-mobile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
+}
+
+.presale-accordion-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.presale-accordion {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.presale-accordion-item {
+  border-top: 1px solid #e5e7eb;
+}
+
+.presale-accordion-header {
+  background: white;
+  cursor: pointer;
+  padding: 1em 1.5em;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.presale-accordion-header:hover {
+  background: #f9fafb;
+}
+
+.presale-accordion-icon {
+  transition: transform 0.3s ease;
+}
+
+.presale-accordion-header.active .presale-accordion-icon {
+  transform: rotate(180deg);
+}
+
+.presale-accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  background: #f9fafb;
+  padding: 0 1.5em;
+  transition:
+    grid-template-rows 0.4s ease,
+    padding 0.3s ease;
+}
+
+.presale-accordion-content > div {
+  min-height: 0;
+}
+
+.presale-accordion-content.open {
+  grid-template-rows: 1fr;
+  padding: 1em 1.5em;
+}
+
+@media (min-width: 480px) {
+  .presale-sl-countdown span {
+    font-size: 80px;
+    line-height: 80px;
+  }
+
+  .mySwiper {
+    height: 20em;
+  }
+}
+
+@media (min-width: 768px) {
+  .presale-sl-swiper-item-content {
+    opacity: 1;
+  }
+
+  .presale-sl-swiper-item h4,
+  .presale-sl-swiper-item p,
+  .presale-sl-swiper-item a {
+    font-size: 13px;
+  }
+
+  .presale-sl-swiper-item-img {
+    width: 8em;
+    height: 8em;
+  }
+
+  .swiper-slide-next .presale-sl-swiper-item-img {
+    width: 12em;
+    height: 12em;
+  }
+
+  .cardSwiper {
+    width: 22em;
+    height: 40em;
+    max-width: 400px;
+  }
+
+  .presale-sl-ugcs-mobile {
+    margin: 0;
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .presale-sl-wrapper {
+    width: auto;
+  }
+
+  .presale-sl-main-content {
+    width: 90%;
+  }
+
+  .presale-sl-usp {
+    gap: 0;
+  }
+
+  .presale-sl-usp-item {
+    width: 12em;
+  }
+
+  .presale-sl-usp-item img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .presale-sl-usp p {
+    text-align: left;
+  }
+
+  .presale-sl-ugcs {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .presale-sl-ugc {
+    width: 17em;
+  }
+
+  .presale-sl-rating {
+    flex-direction: row;
+  }
+
+  .presale-sl-compare {
+    flex-direction: row;
+    width: auto;
+    gap: 0;
+  }
+
+  .presale-sl-compare-item {
+    width: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  main {
+    display: revert;
+  }
+
+  .presale-sl-sale-bar {
+    flex-direction: row;
+  }
+
+  .presale-sl-sale-line {
+    display: block;
+  }
+
+  .presale-sl-sale-bar-code-wrapper .presale-sl-sale-span {
+    padding-top: 1em !important;
+    padding-bottom: 0 !important;
+  }
+
+  .presale-sl-sale-tooltip .presale-sl-tooltip-text {
+    display: block;
+  }
+
+  .presale-sl-benefits-wrapper {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .presale-sl-sub-banner {
+    width: 100%;
+  }
+
+  .presale-sl-benefit {
+    width: 22em;
+  }
+
+  .desktopSwiper {
+    display: block !important;
+  }
+
+  .cardSwiper {
+    display: none !important;
+  }
+}
+
+.presale-sl-hidden {
+  display: none;
+  margin-top: 0;
+}
+
+.presale-content-inner-full {
+  width: 100%;
+}
+
+.presale-content-start {
+  justify-content: start;
+}
+
+.presale-headline-flex {
+  display: flex;
+  justify-content: center;
+}

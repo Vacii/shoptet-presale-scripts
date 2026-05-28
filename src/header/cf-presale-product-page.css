@@ -1,0 +1,155 @@
+.presale-wrapper {
+  margin-bottom: 19px;
+}
+
+.presale-bar {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(235, 72, 62);
+  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    rgba(235, 72, 62, 1) 0%,
+    rgba(240, 150, 60, 1) 100%
+  );
+}
+
+.availability-value {
+  display: flex;
+}
+
+.presale-first-bar-content p {
+  margin: 0 !important;
+  padding: 10px 0 10px 0 !important;
+  font-size: 16px;
+}
+
+.presale-bar-second {
+  margin-top: 7px;
+  border-radius: 5px;
+}
+
+.presale-second-bar-content p {
+  margin: 0 !important;
+  padding: 15px 0 15px 0 !important;
+  font-size: 18px;
+}
+
+.presale-code-copy-icon {
+    font-size: 18px;
+    height: 15px;
+    font-weight: bold;
+    padding-left: 6px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.presale-info {
+  padding: 3px 5px;
+  font-size: 16px;
+}
+
+.presale-tooltip {
+  position: relative;
+}
+
+.presale-tooltip .presale-tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.presale-tooltip:hover .presale-tooltiptext {
+  visibility: visible;
+}
+
+.presale-pulse {
+  animation: blink 1.5s infinite;
+}
+
+.presale-product-in-catalog-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.presale-product-in-catalog {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 16px;
+  gap: 0;
+  width: 90%;
+  max-width: 300px;
+  background: rgb(235, 72, 62);
+  background: linear-gradient(
+    90deg,
+    rgba(235, 72, 62, 1) 0%,
+    rgba(240, 150, 60, 1) 100%
+  );
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.presale-product-separator {
+  display: none;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 480px) {
+  .presale-tooltiptext {
+    width: 300px !important;
+  }
+
+  .presale-first-bar-content p {
+    font-size: 20px !important;
+  }
+
+  .presale-second-bar-content p {
+    font-size: 22px !important;
+  }
+
+  .presale-product-in-catalog {
+    width: 80%;
+    gap: 4px;
+    max-width: 400px;
+    flex-direction: row;
+  }
+
+  .presale-product-separator {
+    display: block;
+  }
+}
+
+.presale-orange-text {
+  color: rgb(240, 150, 60);
+}
+
+.presale-bg-transparent {
+  background-color: transparent !important;
+}
