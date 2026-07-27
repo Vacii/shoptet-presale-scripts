@@ -15,25 +15,7 @@
  */
 
 import '../header/cf-presale-product-page.css';
-
-/**
- * Copies the presale code to the clipboard and provides visual feedback.
- */
-function copyCode() {
-  const copyText = document.getElementsByClassName('presale-sale-code')[0];
-  const code = copyText.innerText;
-
-  navigator.clipboard.writeText(code).then(function () {
-    const img = document.getElementsByClassName('presale-code-copy-icon')[0];
-    const originalSrc = img.src;
-
-    img.src =
-      'https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg';
-    setTimeout(function () {
-      img.src = originalSrc;
-    }, 1500);
-  });
-}
+import { copyPresaleCode } from '../shared/copy-code.js';
 
 const PRESALE_ENDED_TEXT = 'Předobjednávka skončila';
 const MS_PER_MINUTE = 1000 * 60;
@@ -212,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .querySelector('.presale-first-bar-content')
       .addEventListener('click', function (e) {
         if (e.target.closest('.presale-code-copy-btn')) {
-          copyCode();
+          copyPresaleCode('.presale-sale-code', '.presale-code-copy-icon');
         }
       });
 

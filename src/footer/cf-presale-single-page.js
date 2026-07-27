@@ -13,6 +13,7 @@
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import '../header/cf-presale-single-page.css';
+import { copyPresaleCode } from '../shared/copy-code.js';
 
 const presaleTemplate = document.createElement('template');
 presaleTemplate.innerHTML = `
@@ -113,29 +114,6 @@ presaleTemplate.innerHTML = `
   </div>
   </div>
 `;
-
-/**
- * Copies the discount code from the presale banner to the user's clipboard.
- * Changes the icon to a checkmark temporarily to indicate success.
- */
-function copySinglePageCode() {
-  const copyText = document.getElementsByClassName('presale-sl-sale-code')[0];
-  const code = copyText.innerText;
-
-  navigator.clipboard.writeText(code).then(function () {
-    const img = document.getElementsByClassName(
-      'presale-sl-sale-code-copy-icon',
-    )[0];
-
-    const originalSrc = img.src;
-
-    img.src =
-      'https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg';
-    setTimeout(function () {
-      img.src = originalSrc;
-    }, 1500);
-  });
-}
 
 /**
  * Hides the first element with the given class name from view.
@@ -525,7 +503,12 @@ document.addEventListener('DOMContentLoaded', function () {
     aboutContainer.appendChild(presaleTemplate.content.cloneNode(true));
     document
       .querySelector('.presale-sl-sale-code-copy-btn')
-      .addEventListener('click', copySinglePageCode);
+      .addEventListener('click', () =>
+        copyPresaleCode(
+          '.presale-sl-sale-code',
+          '.presale-sl-sale-code-copy-icon',
+        ),
+      );
     document
       .getElementsByClassName('content-inner')[0]
       .classList.add('presale-content-inner-full');
