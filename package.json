@@ -1,0 +1,19 @@
+{
+  "name": "shoptet-presale-scripts",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "css-loader": "^7",
+    "css-minimizer-webpack-plugin": "^7",
+    "mini-css-extract-plugin": "^2",
+    "webpack": "^5",
+    "webpack-cli": "^5"
+  },
+  "dependencies": {
+    "swiper": "^12"
+  }
+}
