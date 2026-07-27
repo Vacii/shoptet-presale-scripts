@@ -163,9 +163,9 @@ function updateBanner(mediaUrl, productUrl = '#', altText = '') {
 
   container.innerHTML = ''; // Clear previous content
 
-  const lowerUrl = mediaUrl.toLowerCase();
+  const lowerMediaUrl = mediaUrl.toLowerCase();
 
-  if (videoExtensions.some((ext) => lowerUrl.endsWith(ext))) {
+  if (videoExtensions.some((ext) => lowerMediaUrl.endsWith(ext))) {
     const video = document.createElement('video');
     video.loop = true;
     video.muted = true;
@@ -181,7 +181,7 @@ function updateBanner(mediaUrl, productUrl = '#', altText = '') {
 
     video.appendChild(source);
     container.appendChild(video);
-  } else if (imageExtensions.some((ext) => lowerUrl.endsWith(ext))) {
+  } else if (imageExtensions.some((ext) => lowerMediaUrl.endsWith(ext))) {
     const img = document.createElement('img');
     img.className = 'presale-sl-variable-title-banner lazyloaded';
     img.setAttribute('src', mediaUrl);

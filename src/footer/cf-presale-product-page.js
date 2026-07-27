@@ -35,12 +35,15 @@ function copyCode() {
   });
 }
 
+const PRESALE_ENDED_TEXT = 'Předobjednávka skončila';
+const MS_PER_MINUTE = 1000 * 60;
+const MS_PER_HOUR = MS_PER_MINUTE * 60;
+const MS_PER_DAY = MS_PER_HOUR * 24;
+
 /**
  * Main script: checks page type, fetches presale configuration,
  * and modifies the DOM accordingly.
  */
-const PRESALE_ENDED_TEXT = 'Předobjednávka skončila';
-
 document.addEventListener('DOMContentLoaded', function () {
   const pageType = getShoptetDataLayer('pageType');
 
@@ -272,9 +275,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    const MS_PER_MINUTE = 1000 * 60;
-    const MS_PER_HOUR = MS_PER_MINUTE * 60;
-    const MS_PER_DAY = MS_PER_HOUR * 24;
     const days = Math.floor(distance / MS_PER_DAY);
     const hours = Math.floor((distance % MS_PER_DAY) / MS_PER_HOUR);
     const minutes = Math.floor((distance % MS_PER_HOUR) / MS_PER_MINUTE);
@@ -304,9 +304,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const now = new Date().getTime();
     const distance = countDownDateTime - now;
 
-    const MS_PER_MINUTE = 1000 * 60;
-    const MS_PER_HOUR = MS_PER_MINUTE * 60;
-    const MS_PER_DAY = MS_PER_HOUR * 24;
     const days = Math.floor(distance / MS_PER_DAY);
     const hours = Math.floor((distance % MS_PER_DAY) / MS_PER_HOUR);
     const minutes = Math.floor((distance % MS_PER_HOUR) / MS_PER_MINUTE);
@@ -316,24 +313,38 @@ document.addEventListener('DOMContentLoaded', function () {
         <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="Kopírovat kód" height="15px" /></button>`
       : description;
 
+    const countdownText = `${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
+
+    const firstBarContent = document.querySelector(
+      '.presale-first-bar-content p',
+    );
+    const secondBarContent = document.querySelector(
+      '.presale-second-bar-content p',
+    );
+
     if (visible === true) {
-      document.querySelector('.presale-second-bar-content p').innerHTML =
-        `${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
-      document.querySelector('.presale-first-bar-content p').innerHTML =
-        showDescriptionText;
+      if (!firstBarContent || !secondBarContent) return;
+
+      firstBarContent.innerHTML = showDescriptionText;
+
       if (distance < 0) {
-        document.querySelector('.presale-second-bar-content p').textContent =
-          PRESALE_ENDED_TEXT;
+        secondBarContent.textContent = PRESALE_ENDED_TEXT;
         clearInterval(productDetailTimer);
+        return;
       }
-    } else {
-      document.querySelector('.presale-first-bar-content p').innerHTML =
-        `${showDescriptionText} | Končí za ${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
-      if (distance < 0) {
-        document.querySelector('.presale-first-bar-content p').textContent =
-          PRESALE_ENDED_TEXT;
-        clearInterval(productDetailTimer);
-      }
+
+      secondBarContent.innerHTML = countdownText;
+      return;
     }
+
+    if (!firstBarContent) return;
+
+    if (distance < 0) {
+      firstBarContent.textContent = PRESALE_ENDED_TEXT;
+      clearInterval(productDetailTimer);
+      return;
+    }
+
+    firstBarContent.innerHTML = `${showDescriptionText} | Končí za ${countdownText}`;
   };
 });
