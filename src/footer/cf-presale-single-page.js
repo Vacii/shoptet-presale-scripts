@@ -550,11 +550,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const getCountdown = function (countDownDate) {
     if (!countDownDate || isNaN(countDownDate)) return;
 
-    const now = new Date().getTime();
-    const distance = countDownDate - now;
-
     const targetElement = document.querySelector('.presale-sl-countdown span');
     if (!targetElement) return;
+
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
 
     if (distance < 0) {
       clearInterval(countdownTimer);

@@ -245,11 +245,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const getCatalogCountdown = function (countDownDateTime, saleCode) {
     if (!countDownDateTime || isNaN(countDownDateTime)) return;
 
-    const now = new Date().getTime();
-    const distance = countDownDateTime - now;
-
     const target = document.querySelector('.presale-product-in-catalog');
     if (!target) return;
+
+    const now = new Date().getTime();
+    const distance = countDownDateTime - now;
 
     if (distance < 0) {
       target.textContent = PRESALE_ENDED_TEXT;
