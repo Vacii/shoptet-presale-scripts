@@ -15,6 +15,10 @@ import 'swiper/css/bundle';
 import '../header/cf-presale-single-page.css';
 import { copyPresaleCode } from '../shared/copy-code.js';
 
+const MS_PER_MINUTE = 1000 * 60;
+const MS_PER_HOUR = MS_PER_MINUTE * 60;
+const MS_PER_DAY = MS_PER_HOUR * 24;
+
 const presaleTemplate = document.createElement('template');
 presaleTemplate.innerHTML = `
   <div class="presale-sl-wrapper">
@@ -562,9 +566,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    const MS_PER_MINUTE = 1000 * 60;
-    const MS_PER_HOUR = MS_PER_MINUTE * 60;
-    const MS_PER_DAY = MS_PER_HOUR * 24;
     const days = Math.floor(distance / MS_PER_DAY);
     const hours = Math.floor((distance % MS_PER_DAY) / MS_PER_HOUR);
     const minutes = Math.floor((distance % MS_PER_HOUR) / MS_PER_MINUTE);
