@@ -14,6 +14,7 @@ import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import '../header/cf-presale-single-page.css';
 import { copyPresaleCode } from '../shared/copy-code.js';
+import copyIcon from '../../assets/copy-icon.svg';
 
 const MS_PER_MINUTE = 1000 * 60;
 const MS_PER_HOUR = MS_PER_MINUTE * 60;
@@ -88,7 +89,7 @@ presaleTemplate.innerHTML = `
               <button class="presale-sl-sale-code-copy-btn">
                 <img
                   class="presale-sl-sale-code-copy-icon"
-                  src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg"
+                  src="${copyIcon}"
                   alt="Kopírovat kód"
                   height="15px"
                 />

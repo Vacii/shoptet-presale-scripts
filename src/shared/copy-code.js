@@ -10,8 +10,8 @@
  * ===============================================================
  */
 
-const CHECK_ICON_URL =
-  'https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/check.svg';
+import checkIcon from '../../assets/check.svg';
+
 const ICON_RESET_DELAY = 1500;
 
 /**
@@ -29,7 +29,7 @@ export function copyPresaleCode(codeSelector, iconSelector) {
     if (!icon) return;
 
     const originalSrc = icon.src;
-    icon.src = CHECK_ICON_URL;
+    icon.src = checkIcon;
 
     setTimeout(function () {
       icon.src = originalSrc;

@@ -16,6 +16,7 @@
 
 import '../header/cf-presale-product-page.css';
 import { copyPresaleCode } from '../shared/copy-code.js';
+import copyIcon from '../../assets/copy-icon.svg';
 
 const PRESALE_ENDED_TEXT = 'Předobjednávka skončila';
 const MS_PER_MINUTE = 1000 * 60;
@@ -292,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const showDescriptionText = code
       ? `<span class="presale-sale-description">${description}</span> | Kód: <span class="presale-sale-code">${code}</span>
-        <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="https://cdn.myshoptet.com/usr/697363.myshoptet.com/user/documents/presale/public/copy-icon.svg" alt="Kopírovat kód" height="15px" /></button>`
+        <button class="presale-code-copy-btn"><img class="presale-code-copy-icon" src="${copyIcon}" alt="Kopírovat kód" height="15px" /></button>`
       : description;
 
     const countdownText = `${days}d <span class="presale-pulse">:</span> ${hours}h <span class="presale-pulse">:</span> ${minutes}m`;
