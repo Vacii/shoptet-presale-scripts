@@ -6,8 +6,9 @@
  * that is already in the document: no request, no waiting, no layout shift. See
  * `docs/config-delivery.md`.
  *
- * The fetch is the fallback — the window right after an install, a failed write, or the
- * remainder of a configuration that did not fit the 8192-character snippet.
+ * Non-product pages retain a fetch fallback for compatibility and for the landing page.
+ * Product pages use `loadProduct`, which is deliberately inline-only: a missing or
+ * partial snippet must not turn a product view into a request to customerflow.cz.
  */
 
 import { normalisePath } from './url.js';
@@ -65,6 +66,7 @@ const CACHE_TTL_MS = 60 * 1000;
  * @property {LandingConfig | null} [landing]
  * @property {StorefrontTheme} [theme]
  * @property {boolean} [partial]
+ * @property {boolean} [disabled]
  */
 
 /**
@@ -102,6 +104,22 @@ export function readInline() {
   } catch {
     return null;
   }
+}
+
+/**
+ * The product-page configuration, from the document only.
+ *
+ * A partial snippet is not safe for a product page: it can omit a campaign that should
+ * be shown, and fetching the rest would violate the product-page no-network contract.
+ * Returning `null` fails closed until the backend publishes a complete replacement. The
+ * disabled marker is also rejected explicitly so a future marker can omit `partial`
+ * without accidentally becoming accepted product config.
+ *
+ * @returns {PresaleConfig | null}
+ */
+export function loadProduct() {
+  const inline = readInline();
+  return inline && !inline.partial && !inline.disabled ? inline : null;
 }
 
 /**
@@ -158,17 +176,17 @@ function writeCache(config) {
 }
 
 /**
- * The configuration for this page, from the document if it is there and from the API if
- * it is not.
+ * Compatibility loader for non-product pages, with a public-endpoint fallback.
+ * Product pages must use `loadProduct`.
  *
  * @param {number | null} eshopId
  * @returns {Promise<PresaleConfig | null>}
  */
 export async function load(eshopId) {
   const inline = readInline();
-  // `partial` means the snippet hit its character limit and campaigns were trimmed off
-  // the end, so the full list has to come from the API.
-  if (inline && !inline.partial) return inline;
+  // This compatibility loader is used by non-product pages. A legacy `partial` snippet
+  // can still be completed here, while product pages use `loadProduct` and fail closed.
+  if (inline && !inline.partial && !inline.disabled) return inline;
   if (eshopId === null) return inline;
 
   const remote = await fetchRemote(eshopId);

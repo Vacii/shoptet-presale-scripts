@@ -5,5 +5,5 @@
  * the bundle Shoptet's pipeline produces carries no environment with it.
  */
 
-/** The API origin for the fallback fetch; an empty string in a normal build. */
+/** The API origin for non-product/landing fallback fetches; empty in a normal build. */
 declare const __CFP_API_ORIGIN__: string | undefined;
