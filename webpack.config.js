@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import webpack from 'webpack';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -27,15 +26,7 @@ export default (_env, argv) => ({
     // directory and stale files accumulated there forever.
     clean: true,
   },
-  plugins: [
-    new MiniCssExtractPlugin({ filename: 'header/[name].css' }),
-    // The comment in src/config.js promised this and there was no DefinePlugin behind
-    // it, so pointing a development build at a local API meant editing the source.
-    // Unset in a normal build, where the default in config.js stands.
-    new webpack.DefinePlugin({
-      __CFP_API_ORIGIN__: JSON.stringify(process.env.CFP_API_ORIGIN ?? ''),
-    }),
-  ],
+  plugins: [new MiniCssExtractPlugin({ filename: 'header/[name].css' })],
   optimization: { minimizer: ['...', new CssMinimizerPlugin()] },
   module: {
     rules: [

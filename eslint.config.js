@@ -23,8 +23,6 @@ export default [
         // do not define them.
         shoptet: 'readonly',
         getShoptetDataLayer: 'readonly',
-        // Substituted by DefinePlugin at build time; see src/globals.d.ts.
-        __CFP_API_ORIGIN__: 'readonly',
       },
     },
     rules: {

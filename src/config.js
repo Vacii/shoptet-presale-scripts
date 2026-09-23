@@ -6,30 +6,12 @@
  * that is already in the document: no request, no waiting, no layout shift. See
  * `docs/config-delivery.md`.
  *
- * Non-product pages retain a fetch fallback for compatibility and for the landing page.
- * Product pages use `loadProduct`, which is deliberately inline-only: a missing or
- * partial snippet must not turn a product view into a request to customerflow.cz.
+ * Every page reads only the snippet Shoptet placed in the shop's own document. Missing,
+ * partial or disabled snippets fail closed. The landing-page delivery is deferred until
+ * it can be hosted by Shoptet as well.
  */
-
-import { normalisePath } from './url.js';
 
 export const SNIPPET_ID = 'cfp-config';
-
-/**
- * Where the fallback fetch goes.
- *
- * `__CFP_API_ORIGIN__` is substituted by DefinePlugin and is an empty string in a normal
- * build, so production needs no environment at all. Set `CFP_API_ORIGIN` to point a
- * development build at a local API:
- *
- *     CFP_API_ORIGIN=http://localhost:8000 pnpm --filter storefront dev
- */
-const API_ORIGIN =
-  (typeof __CFP_API_ORIGIN__ === 'string' && __CFP_API_ORIGIN__) || 'https://customerflow.cz';
-
-const FETCH_TIMEOUT_MS = 3000;
-const CACHE_KEY = 'cfp-config';
-const CACHE_TTL_MS = 60 * 1000;
 
 /**
  * @typedef {object} StorefrontTheme
@@ -50,46 +32,31 @@ const CACHE_TTL_MS = 60 * 1000;
  */
 
 /**
- * @typedef {object} LandingConfig
- * @property {string} urlPath
- * @property {string | null} [title]
- * @property {string | null} [endsAt]
- * @property {ReadonlyArray<{ block: unknown }>} [blocks]
- */
-
-/**
  * @typedef {object} PresaleConfig
  * @property {number} [v]
  * @property {number} [eshopId]
  * @property {ReadonlyArray<PresaleCampaign>} products
  * @property {string | null} [landingPath]
- * @property {LandingConfig | null} [landing]
  * @property {StorefrontTheme} [theme]
  * @property {boolean} [partial]
  * @property {boolean} [disabled]
  */
 
 /**
- * Accept either shape and give back one.
+ * Validate the inline shape and give back one.
  *
- * The inline snippet carries `landingPath` — a string is all that fits in 8192 characters
- * alongside the campaigns. The API returns the whole `landing` object, blocks included.
- * Deriving one from the other here means nothing downstream has to know which source it
- * is looking at.
+ * The inline snippet may carry a landing path for backend compatibility, but landing
+ * rendering is disabled until its delivery is redesigned for Shoptet.
  *
  * @param {unknown} value
  * @returns {PresaleConfig | null}
  */
 function asConfig(value) {
   if (!value || typeof value !== 'object') return null;
-  const record = /** @type {{ products?: unknown, landing?: LandingConfig | null }} */ (value);
+  const record = /** @type {{ products?: unknown }} */ (value);
   if (!Array.isArray(record.products)) return null;
 
-  const config = /** @type {PresaleConfig} */ (value);
-  if (!config.landingPath && record.landing?.urlPath) {
-    config.landingPath = record.landing.urlPath;
-  }
-  return config;
+  return /** @type {PresaleConfig} */ (value);
 }
 
 /**
@@ -123,92 +90,13 @@ export function loadProduct() {
 }
 
 /**
- * @param {number} eshopId
- * @returns {Promise<PresaleConfig | null>}
+ * Read a complete inline configuration for catalogue pages.
+ * @returns {PresaleConfig | null}
  */
-async function fetchRemote(eshopId) {
-  const cached = readCache();
-  if (cached) return cached;
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, FETCH_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(`${API_ORIGIN}/public/v1/config/${eshopId}`, {
-      signal: controller.signal,
-      credentials: 'omit',
-    });
-    // The previous version's entire error strategy was `.catch(() => null)`, so a 500 or
-    // an HTML error page parsed as "no campaigns" and the bar just vanished.
-    if (!response.ok) return null;
-    const parsed = asConfig(await response.json());
-    if (parsed) writeCache(parsed);
-    return parsed;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-/** @returns {PresaleConfig | null} */
-function readCache() {
-  try {
-    const raw = window.sessionStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { at, config } = JSON.parse(raw);
-    if (typeof at !== 'number' || Date.now() - at > CACHE_TTL_MS) return null;
-    return asConfig(config);
-  } catch {
-    return null;
-  }
-}
-
-/** @param {PresaleConfig} config */
-function writeCache(config) {
-  try {
-    window.sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), config }));
-  } catch {
-    // Private mode and full quotas both throw here. The cache is an optimisation.
-  }
-}
-
-/**
- * Compatibility loader for non-product pages, with a public-endpoint fallback.
- * Product pages must use `loadProduct`.
- *
- * @param {number | null} eshopId
- * @returns {Promise<PresaleConfig | null>}
- */
-export async function load(eshopId) {
+export function load() {
   const inline = readInline();
-  // This compatibility loader is used by non-product pages. A legacy `partial` snippet
-  // can still be completed here, while product pages use `loadProduct` and fail closed.
   if (inline && !inline.partial && !inline.disabled) return inline;
-  if (eshopId === null) return inline;
-
-  const remote = await fetchRemote(eshopId);
-  return remote ?? inline;
-}
-
-/**
- * The landing page's blocks.
- *
- * These never fit the inline snippet — media URLs, FAQ answers and USP copy are far past
- * 8192 characters, and inflating every page of a shop to serve one page would be a poor
- * trade even if they did. So this is one request, on one page, only when a visitor is
- * actually standing on it.
- *
- * @param {number | null} eshopId
- * @returns {Promise<LandingConfig | null>}
- */
-export async function loadLanding(eshopId) {
-  const inline = readInline();
-  if (inline?.landing) return inline.landing;
-  if (eshopId === null) return null;
-  return (await fetchRemote(eshopId))?.landing ?? null;
+  return null;
 }
 
 /**
@@ -232,13 +120,4 @@ export function activeCampaigns(config, now = new Date()) {
     if (ends !== null && !Number.isNaN(ends) && ends <= at) return false;
     return true;
   });
-}
-
-/**
- * @param {PresaleConfig | null} config
- * @returns {string | null}
- */
-export function landingPath(config) {
-  const path = config?.landingPath;
-  return typeof path === 'string' && path !== '' ? normalisePath(path) : null;
 }

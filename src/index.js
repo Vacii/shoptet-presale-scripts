@@ -6,21 +6,12 @@
  */
 
 import './styles/bar.css';
-import './styles/landing.css';
 
 import { applyCatalogue } from './catalogue.js';
-import { activeCampaigns, landingPath, load, loadLanding, loadProduct } from './config.js';
+import { activeCampaigns, load, loadProduct } from './config.js';
 import { translator } from './i18n.js';
-import { applyLanding } from './landing.js';
 import { applyProductPage } from './product-page.js';
-import {
-  currentProductGuid,
-  onContentReady,
-  pageType,
-  projectId,
-  templateName,
-} from './shoptet.js';
-import { currentPath } from './url.js';
+import { currentProductGuid, onContentReady, pageType, templateName } from './shoptet.js';
 
 const PRODUCT_PAGE = 'productDetail';
 const LISTING_PAGES = [
@@ -31,31 +22,13 @@ const LISTING_PAGES = [
   'manufacturerDetail',
 ];
 
-/**
- * @param {import('./config.js').PresaleConfig} config
- * @param {number | null} eshopId
- * @param {ReturnType<typeof translator>} t
- */
-async function maybeRenderLanding(config, eshopId, t) {
-  if (landingPath(config) !== currentPath()) return;
-  const landing = await loadLanding(eshopId);
-  if (landing) onContentReady(() => applyLanding(landing, t, currentPath(), config.theme));
-}
-
-async function start() {
+function start() {
   const type = pageType();
-  const eshopId = projectId();
-  // Product pages are intentionally inline-only. If the template write is missing or
-  // incomplete, fail closed instead of making a customerflow.cz request in the visitor's
-  // critical path.
-  const config = type === PRODUCT_PAGE ? loadProduct() : await load(eshopId);
+  // Every page is inline-only. If the snippet is missing or incomplete, fail closed.
+  const config = type === PRODUCT_PAGE ? loadProduct() : load();
   if (!config) return;
 
   const t = translator();
-
-  // The landing page is an ordinary article, so it is not one of the page types below.
-  // Checking the path first is what stops the addon touching the shop's other articles.
-  if (type !== PRODUCT_PAGE) await maybeRenderLanding(config, eshopId, t);
 
   if (type !== PRODUCT_PAGE && !LISTING_PAGES.includes(type)) return;
 
