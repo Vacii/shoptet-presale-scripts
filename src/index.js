@@ -6,12 +6,15 @@
  */
 
 import './styles/bar.css';
+import './styles/landing.css';
 
 import { applyCatalogue } from './catalogue.js';
-import { activeCampaigns, load, loadProduct } from './config.js';
+import { activeCampaigns, landingPath, load, loadLanding } from './config.js';
 import { translator } from './i18n.js';
+import { applyLanding } from './landing.js';
 import { applyProductPage } from './product-page.js';
 import { currentProductGuid, onContentReady, pageType, templateName } from './shoptet.js';
+import { currentPath } from './url.js';
 
 const PRODUCT_PAGE = 'productDetail';
 const LISTING_PAGES = [
@@ -22,13 +25,26 @@ const LISTING_PAGES = [
   'manufacturerDetail',
 ];
 
+/**
+ * @param {import('./config.js').PresaleConfig} config
+ * @param {ReturnType<typeof translator>} t
+ */
+function maybeRenderLanding(config, t) {
+  if (landingPath(config) !== currentPath()) return;
+  const landing = loadLanding(config);
+  if (landing) onContentReady(() => applyLanding(landing, t, currentPath(), config.theme));
+}
+
 function start() {
-  const type = pageType();
-  // Every page is inline-only. If the snippet is missing or incomplete, fail closed.
-  const config = type === PRODUCT_PAGE ? loadProduct() : load();
+  const config = load();
   if (!config) return;
 
   const t = translator();
+  const type = pageType();
+
+  // The landing page is an ordinary article, so it is not one of the page types below.
+  // Checking the path first is what stops the addon touching the shop's other articles.
+  maybeRenderLanding(config, t);
 
   if (type !== PRODUCT_PAGE && !LISTING_PAGES.includes(type)) return;
 
@@ -47,4 +63,4 @@ function start() {
   });
 }
 
-void start();
+start();

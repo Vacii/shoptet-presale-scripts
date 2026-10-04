@@ -6,10 +6,11 @@
  * that is already in the document: no request, no waiting, no layout shift. See
  * `docs/config-delivery.md`.
  *
- * Every page reads only the snippet Shoptet placed in the shop's own document. Missing,
- * partial or disabled snippets fail closed. The landing-page delivery is deferred until
- * it can be hosted by Shoptet as well.
+ * The complete configuration, including the published landing page, must fit in the
+ * 8192-character snippet. The admin API rejects saves that would exceed that limit.
  */
+
+import { normalisePath } from './url.js';
 
 export const SNIPPET_ID = 'cfp-config';
 
@@ -32,31 +33,41 @@ export const SNIPPET_ID = 'cfp-config';
  */
 
 /**
+ * @typedef {object} LandingConfig
+ * @property {string} urlPath
+ * @property {string | null} [title]
+ * @property {string | null} [endsAt]
+ * @property {ReadonlyArray<{ block: unknown }>} [blocks]
+ */
+
+/**
  * @typedef {object} PresaleConfig
  * @property {number} [v]
  * @property {number} [eshopId]
  * @property {ReadonlyArray<PresaleCampaign>} products
  * @property {string | null} [landingPath]
+ * @property {LandingConfig | null} [landing]
  * @property {StorefrontTheme} [theme]
  * @property {boolean} [partial]
  * @property {boolean} [disabled]
  */
 
 /**
- * Validate the inline shape and give back one.
- *
- * The inline snippet may carry a landing path for backend compatibility, but landing
- * rendering is disabled until its delivery is redesigned for Shoptet.
+ * Validate the inline payload and derive a path for existing callers.
  *
  * @param {unknown} value
  * @returns {PresaleConfig | null}
  */
 function asConfig(value) {
   if (!value || typeof value !== 'object') return null;
-  const record = /** @type {{ products?: unknown }} */ (value);
+  const record = /** @type {{ products?: unknown, landing?: LandingConfig | null }} */ (value);
   if (!Array.isArray(record.products)) return null;
 
-  return /** @type {PresaleConfig} */ (value);
+  const config = /** @type {PresaleConfig} */ (value);
+  if (!config.landingPath && record.landing?.urlPath) {
+    config.landingPath = record.landing.urlPath;
+  }
+  return config;
 }
 
 /**
@@ -74,29 +85,24 @@ export function readInline() {
 }
 
 /**
- * The product-page configuration, from the document only.
- *
- * A partial snippet is not safe for a product page: it can omit a campaign that should
- * be shown, and fetching the rest would violate the product-page no-network contract.
- * Returning `null` fails closed until the backend publishes a complete replacement. The
- * disabled marker is also rejected explicitly so a future marker can omit `partial`
- * without accidentally becoming accepted product config.
- *
+ * Read the complete configuration from the document. Missing, partial and disabled
+ * snippets fail closed without making a request to CustomerFlow.
  * @returns {PresaleConfig | null}
  */
-export function loadProduct() {
+export function load() {
   const inline = readInline();
   return inline && !inline.partial && !inline.disabled ? inline : null;
 }
 
 /**
- * Read a complete inline configuration for catalogue pages.
- * @returns {PresaleConfig | null}
+ * The landing page's blocks.
+ *
+ * Landing pages are included in the same bounded inline payload as the campaign bars.
+ * @param {PresaleConfig | null} config
+ * @returns {LandingConfig | null}
  */
-export function load() {
-  const inline = readInline();
-  if (inline && !inline.partial && !inline.disabled) return inline;
-  return null;
+export function loadLanding(config) {
+  return config?.landing ?? null;
 }
 
 /**
@@ -120,4 +126,13 @@ export function activeCampaigns(config, now = new Date()) {
     if (ends !== null && !Number.isNaN(ends) && ends <= at) return false;
     return true;
   });
+}
+
+/**
+ * @param {PresaleConfig | null} config
+ * @returns {string | null}
+ */
+export function landingPath(config) {
+  const path = config?.landingPath ?? config?.landing?.urlPath;
+  return typeof path === 'string' && path !== '' ? normalisePath(path) : null;
 }
