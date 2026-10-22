@@ -35,7 +35,8 @@
   --cfp-travel: 1em;
 
   box-sizing: border-box;
-  /* Do not inherit a 10px root from the host theme. */
+  /* Do not inherit a 10px root from the host theme. The 16px floor is the only
+     absolute length here: no relative unit can express it. */
   font-size: max(1rem, 16px);
   line-height: 1.5;
 }

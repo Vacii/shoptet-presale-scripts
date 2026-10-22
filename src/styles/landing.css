@@ -29,7 +29,8 @@
      landing page read as a list rather than as a campaign. */
   gap: 3.5em;
   margin: 2em 0;
-  /* Keep the relative scale, but do not inherit a 10px root from the host theme. */
+  /* Keep the relative scale, but do not inherit a 10px root from the host theme. The
+     16px floor is the only absolute length here: no relative unit can express it. */
   font-size: max(1rem, 16px);
   line-height: 1.6;
 }
@@ -139,7 +140,7 @@
 
 .cfp-landing__usps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(14em, 1fr));
   gap: 1.5em;
   margin: 0;
   padding: 0;
@@ -182,7 +183,7 @@
 }
 
 .cfp-landing__ugc {
-  flex: 0 0 min(18rem, 70%);
+  flex: 0 0 min(18em, 70%);
   scroll-snap-align: start;
 }
 
