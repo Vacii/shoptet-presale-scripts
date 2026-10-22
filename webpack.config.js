@@ -9,8 +9,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 /*
  * This build is mirrored into the Shoptet-linked addon repository, where Shoptet's own
  * pipeline runs `yarn build` and ships `dist/` to the merchants' custom codes. Two things
- * follow: the config has to stay buildable on its own, and the output layout has to match
- * what the Codes tab expects — CSS in the header slot, JS in the footer slot.
+ * follow: the config has to stay buildable on its own, and the output has to use the names
+ * the Addon Repository deploys from a flat `dist/`: `styles.header.min.css` for the header
+ * slot and `scripts.footer.min.js` for the footer slot. Any other name is not deployed.
+ * See https://github.com/shoptet/create-visual-addon-boilerplate.
  *
  * One bundle, not one per page type. Custom codes have no page targeting, so every file
  * we produce loads on every page of the shop; splitting it would only duplicate the
@@ -20,13 +22,13 @@ export default (_env, argv) => ({
   entry: { 'cf-presale': './src/index.js' },
   output: {
     path: path.resolve(here, 'dist'),
-    filename: 'footer/[name].js',
+    filename: 'scripts.footer.min.js',
     // Cleaning the whole of dist, not just the JS directory. The previous config set
     // `output.path` to dist/footer, so the extracted CSS landed outside the cleaned
     // directory and stale files accumulated there forever.
     clean: true,
   },
-  plugins: [new MiniCssExtractPlugin({ filename: 'header/[name].css' })],
+  plugins: [new MiniCssExtractPlugin({ filename: 'styles.header.min.css' })],
   optimization: { minimizer: ['...', new CssMinimizerPlugin()] },
   module: {
     rules: [

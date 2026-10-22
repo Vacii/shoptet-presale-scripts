@@ -30,8 +30,7 @@ function copyBySelection(text) {
   field.value = text;
   field.setAttribute('readonly', '');
   field.setAttribute('aria-hidden', 'true');
-  field.style.position = 'fixed';
-  field.style.opacity = '0';
+  field.className = 'cfp-copy-buffer';
   document.body.appendChild(field);
 
   try {

@@ -53,8 +53,11 @@
   flex-direction: column;
   gap: 0;
   width: 100%;
+  /* Mobile first: 1em below Shoptet's xs breakpoint, 1.25em from it up. */
+  --cfp-bar-pad: 1em;
+
   margin: 1.625em 0;
-  padding: 1.25em;
+  padding: var(--cfp-bar-pad);
   border: 0.0625em solid color-mix(in srgb, currentColor 12%, transparent);
   border-radius: var(--cfp-radius);
   background: var(--cfp-surface);
@@ -252,6 +255,12 @@
   opacity: 0.68;
 }
 
+/* Invisible textarea for the selection-based copy fallback in clipboard.js. */
+.cfp-copy-buffer {
+  position: fixed;
+  opacity: 0;
+}
+
 .cfp-bar__icon--copy {
   width: 0.9em;
   height: 0.9em;
@@ -427,8 +436,8 @@
 /* --- native purchase block ------------------------------------------------- */
 
 .cfp-bar__checkout {
-  margin: 1.25em -1.25em -1.25em;
-  padding: 1.25em;
+  margin: 1.25em calc(-1 * var(--cfp-bar-pad)) calc(-1 * var(--cfp-bar-pad));
+  padding: var(--cfp-bar-pad);
   border-top: 0.0625em solid color-mix(in srgb, currentColor 10%, transparent);
   border-radius: 0 0 var(--cfp-radius) var(--cfp-radius);
   background: color-mix(in srgb, currentColor 2%, var(--cfp-surface));
@@ -773,15 +782,9 @@
   }
 }
 
-@media (max-width: 20em) {
+/* Shoptet's xs breakpoint, 480px. */
+@media (min-width: 30em) {
   .cfp-bar {
-    padding: 1em;
-  }
-
-  .cfp-bar__checkout {
-    margin-right: -1em;
-    margin-bottom: -1em;
-    margin-left: -1em;
-    padding: 1em;
+    --cfp-bar-pad: 1.25em;
   }
 }
