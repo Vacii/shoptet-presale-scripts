@@ -74,9 +74,7 @@ export default (_env, argv) => ({
     maxAssetSize: 40 * 1024,
     maxEntrypointSize: 60 * 1024,
   },
-  // `hidden-source-map`, not `source-map`: the map is generated, but no
-  // `//# sourceMappingURL=` comment is appended to the bundle. Shoptet's pipeline copies
-  // only `dist/` into the merchants' code slots, so that comment shipped into every page
-  // of every installed shop pointing at a file that never followed it there.
-  devtool: 'hidden-source-map',
+  // No source maps. Shoptet's pipeline uploads the whole of `dist/`, so a map would only
+  // publish the original source next to the bundle. Debug with `--mode development`.
+  devtool: false,
 });
