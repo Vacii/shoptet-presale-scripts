@@ -1,25 +1,32 @@
 {
-  "name": "presale",
-  "version": "1.0.0",
-  "description": "",
-  "homepage": "https://github.com/Vacii/shoptet-presale-scripts#readme",
-  "bugs": {
-    "url": "https://github.com/Vacii/shoptet-presale-scripts/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Vacii/shoptet-presale-scripts.git"
-  },
-  "license": "MIT",
-  "author": "Lukáš Václavek",
-  "type": "commonjs",
-  "main": "index.js",
+  "name": "storefront",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "build": "mkdir -p dist && cp -r src/* dist/ && cp -r assets/* dist/ 2>/dev/null || echo \"Build completed successfully\"",
-    "clean": "rm -rf dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
-  "dependencies": {
-    "swiper": "^12.0.2"
+  "resolutions": {
+    "serialize-javascript": "7.1.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "babel-loader": "^10.1.1",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
+    "jsdom": "^30.0.1",
+    "mini-css-extract-plugin": "^2.9.4",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
   }
 }

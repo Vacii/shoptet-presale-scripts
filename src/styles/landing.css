@@ -1,0 +1,291 @@
+/*
+ * ART DIRECTION (see README.md)
+ * Alternating widths: media to the container edge, prose held to 66ch and aligned to the
+ * media's left edge, never centred. Tight inside a block, loose between them — that
+ * contrast is the rhythm. The grid breaks once, at the countdown.
+ *
+ * ---
+ *
+ * The stand-alone pre-sale page.
+ *
+ * Everything is scoped under `.cfp-landing`, which only exists on the one article the
+ * merchant configured. The previous stylesheet set `display: flex; align-items: center;
+ * background: #f5f5f5` on a class it added to every article page in the shop.
+ *
+ * The two rails are CSS scroll-snap. Three carousels were the whole reason the old
+ * bundle shipped Swiper — 166 kB of JavaScript and 24 kB of CSS, on every page view of
+ * every installed shop.
+ */
+
+/* `--cfp-accent` and `--cfp-accent-ink` are declared on `:root` in bar.css and written
+   there by `installTheme`. Redeclaring them here would shadow the runtime values for this
+   whole subtree. */
+.cfp-landing {
+  --cfp-radius: 0.5em;
+
+  display: flex;
+  flex-direction: column;
+  /* Loose between blocks, tight inside them. A uniform gap is what made the previous
+     landing page read as a list rather than as a campaign. */
+  gap: 3.5em;
+  margin: 2em 0;
+  /* Keep the relative scale, but do not inherit a 10px root from the host theme. The
+     16px floor is the only absolute length here: no relative unit can express it. */
+  font-size: max(1rem, 16px);
+  line-height: 1.6;
+}
+
+.cfp-landing__block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.cfp-landing__heading {
+  margin: 0;
+  font-size: 2.25em;
+  line-height: 1.2;
+}
+
+.cfp-landing__subheading {
+  margin: 0;
+  font-size: 1.125em;
+  opacity: 0.8;
+}
+
+.cfp-landing__text {
+  margin: 0;
+  /* Prose gets a measure and stays left-aligned. Centred prose is the tell of a page
+     that was not composed; the previous layout let paragraphs run the full page width. */
+  max-width: 66ch;
+}
+
+.cfp-landing__media {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--cfp-radius);
+}
+
+/* An iframe has no intrinsic size, so the 16:9 box is ours to declare. */
+.cfp-landing__media--embed {
+  aspect-ratio: 16 / 9;
+  height: 100%;
+  border: 0;
+}
+
+.cfp-landing__link {
+  display: block;
+}
+
+/* --- comparison: one image per viewport, chosen here rather than by a JS class ---- */
+
+.cfp-landing__media--mobile {
+  display: block;
+}
+
+.cfp-landing__media--desktop {
+  display: none;
+}
+
+@media (min-width: 48em) {
+  .cfp-landing__media--mobile {
+    display: none;
+  }
+
+  .cfp-landing__media--desktop {
+    display: block;
+  }
+}
+
+/* --- sale ------------------------------------------------------------------------ */
+
+.cfp-landing__block--sale {
+  align-items: flex-start;
+  padding: 1.25em;
+  border-radius: var(--cfp-radius);
+  background: color-mix(in srgb, var(--cfp-accent) 8%, transparent);
+}
+
+@supports not (background: color-mix(in srgb, red 10%, transparent)) {
+  .cfp-landing__block--sale {
+    border: 0.0625em solid currentColor;
+    background: transparent;
+  }
+}
+
+.cfp-landing__sale-text {
+  margin: 0;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.cfp-landing__sale-percent {
+  margin: 0;
+  font-size: 2em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--cfp-accent-ink);
+}
+
+.cfp-landing__code-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+}
+
+/* --- highlights and customer photos ---------------------------------------------- */
+
+.cfp-landing__usps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14em, 1fr));
+  gap: 1.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cfp-landing__usp-media {
+  width: 100%;
+  height: auto;
+  border-radius: var(--cfp-radius);
+}
+
+.cfp-landing__usp-title {
+  margin: 0.5em 0 0.25em;
+  font-size: 1.0625em;
+  line-height: 1.3;
+}
+
+.cfp-landing__usp-text {
+  margin: 0;
+  font-size: 0.9375em;
+  opacity: 0.85;
+}
+
+.cfp-landing__rail {
+  display: flex;
+  gap: 1em;
+  margin: 0;
+  padding: 0 0 0.5em;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  /* Focusable, so the rail can be scrolled from the keyboard without a carousel library. */
+}
+
+.cfp-landing__rail:focus-visible {
+  outline: 0.125em solid var(--cfp-accent-ink);
+  outline-offset: 0.125em;
+}
+
+.cfp-landing__ugc {
+  flex: 0 0 min(18em, 70%);
+  scroll-snap-align: start;
+}
+
+.cfp-landing__ugc-media {
+  width: 100%;
+  height: auto;
+  border-radius: var(--cfp-radius);
+}
+
+/* --- questions -------------------------------------------------------------------- */
+
+.cfp-landing__faq-item + .cfp-landing__faq-item {
+  border-top: 0.0625em solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+/* The heading exists for navigation only. Templates style h3 with their own size,
+   margins and case, so it is reset to contribute nothing visible. */
+.cfp-landing__faq-heading {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+}
+
+.cfp-landing__question {
+  display: block;
+  width: 100%;
+  padding: 0.875em 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cfp-landing__question:focus-visible {
+  outline: 0.125em solid var(--cfp-accent-ink);
+  outline-offset: 0.125em;
+}
+
+.cfp-landing__question::after {
+  content: '';
+  float: right;
+  width: 0.5em;
+  height: 0.5em;
+  margin: 0.35em 0.25em 0 0;
+  border-right: 0.125em solid currentColor;
+  border-bottom: 0.125em solid currentColor;
+  transform: rotate(45deg);
+  /* Purely decorative: the state a screen reader needs is on aria-expanded. */
+}
+
+.cfp-landing__question[aria-expanded='true']::after {
+  transform: rotate(-135deg);
+}
+
+.cfp-landing__answer {
+  padding: 0 0 1em;
+  max-width: 66ch;
+}
+
+/* --- countdown: the one place the grid breaks --------------------------------------- */
+
+.cfp-landing__clock {
+  display: flex;
+  /* Caption first in the DOM, number first for the eye. */
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0;
+}
+
+.cfp-landing__countdown {
+  font-size: 3.5em;
+  line-height: 1.05;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--cfp-accent-ink);
+}
+
+.cfp-landing__caption {
+  font-size: 1em;
+  opacity: 0.7;
+}
+
+.cfp-landing__clock--ended .cfp-landing__caption {
+  display: none;
+}
+
+.cfp-landing__clock--ended .cfp-landing__countdown {
+  font-size: 1.5em;
+  color: inherit;
+  opacity: 0.7;
+}
+
+/*
+ * Nothing on this page animates. The one reveal in this bundle is the bar, and it is
+ * attached under `prefers-reduced-motion: no-preference` in bar.css — motion is additive
+ * here, so there is nothing to switch off and no `!important` blanket to write.
+ */

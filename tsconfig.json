@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["vitest/globals", "node"],
+
+    // Plain JavaScript, type-checked through JSDoc. What ships to the Shoptet addon
+    // repository is exactly what is written here — their review tool lints the source,
+    // and a TypeScript source it cannot parse is a rejection we do not need.
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "test"]
+}
