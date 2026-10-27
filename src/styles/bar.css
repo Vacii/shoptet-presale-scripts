@@ -442,7 +442,9 @@
   border-radius: var(--cfp-radius-small);
   background: color-mix(in srgb, var(--cfp-accent) 12%, var(--cfp-surface));
   color: var(--cfp-accent-ink);
-  font-size: 0.875em;
+  /* The badge sits in a listing tile, whose type is often smaller than the page's. Its
+     own size replaces the 16px floor above, so it carries a floor of its own. */
+  font-size: max(0.875em, 14px);
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;

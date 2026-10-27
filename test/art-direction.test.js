@@ -113,12 +113,17 @@ function describeSheet(name, css) {
 
     it('uses px only for the documented type floor', () => {
       // rem and em keep the scale responsive to the reader's browser setting. The deliberate
-      // 16px floors protect both components from a host 10px root.
+      // 16px floors protect both components from a host 10px root, and the listing badge,
+      // which sizes itself, keeps a 14px floor of its own.
+      const floors =
+        name === 'bar.css'
+          ? ['font-size: max(1rem, 16px)', 'font-size: max(0.875em, 14px)']
+          : ['font-size: max(1rem, 16px)'];
       const sizes =
         source.match(
           /(?:font-size|line-height|padding(?:-[\w-]+)?|margin(?:-[\w-]+)?|gap|border(?:-[\w-]+)?|outline(?:-[\w-]+)?|(?:min-)?(?:width|height)):[^;]*\d+(?:\.\d+)?px[^;]*/g,
         ) ?? [];
-      expect(sizes).toEqual(['font-size: max(1rem, 16px)']);
+      expect(sizes).toEqual(floors);
     });
   });
 }
