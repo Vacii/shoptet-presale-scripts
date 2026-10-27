@@ -8,9 +8,10 @@
  * The accent does two different jobs and needs two different guarantees, which is the
  * thing this file got wrong for a while:
  *
- *   --cfp-accent      a fill. Text on it is `--cfp-on-accent`, black or white, and the
- *                     accent is nudged until that pair clears AA. This is the guarantee
- *                     the purchase actions need.
+ *   --cfp-accent      a fill, mixed into the surface at low strength behind the
+ *                     countdown cells, the badge and the discount. It is nudged until
+ *                     black or white text would clear AA on it at full strength, so a
+ *                     neon conversion colour does not turn into a glaring tint.
  *   --cfp-accent-ink  text, a border or a focus ring *on the shop's own page*. Nothing
  *                     about the first guarantee says anything about this one: a pale
  *                     yellow conversion button clears AA against black and lands at
@@ -379,14 +380,13 @@ function configuredAccent(theme) {
  * @param {Element | null} reference an element already in the document, near where ours
  *   will go, so the surface is read from the right place
  * @param {StorefrontTheme} [theme] the merchant's explicit visual choice
- * @returns {{ accent: Rgb, onAccent: Rgb, ink: Rgb | null, surface: Rgb, found: boolean }}
+ * @returns {{ accent: Rgb, ink: Rgb | null, surface: Rgb, found: boolean }}
  */
 export function resolveTheme(reference, theme) {
   const { accent, found } = configuredAccent(theme) ?? readAccent();
   const surface = surfaceUnder(reference);
   return {
     accent: ensureContrast(accent),
-    onAccent: readableForeground(ensureContrast(accent)),
     // From the accent as read, never from the fill-corrected one: the fill correction
     // moves a pale colour further away from a white page, which is backwards here.
     ink: inkFor(accent, surface),
@@ -414,7 +414,6 @@ export function installTheme(reference = document.body, theme) {
   const resolved = resolveTheme(reference, theme);
   const root = document.documentElement;
   root.style.setProperty('--cfp-accent', toCss(resolved.accent));
-  root.style.setProperty('--cfp-on-accent', toCss(resolved.onAccent));
   root.style.setProperty('--cfp-accent-ink', resolved.ink ? toCss(resolved.ink) : 'currentColor');
   root.style.setProperty('--cfp-surface', toCss(resolved.surface));
 

@@ -1,17 +1,18 @@
 /**
  * Applying a campaign to a product detail page.
  *
- * Every step is guarded and every step is idempotent. Shoptet re-renders parts of the
- * page when a variant is chosen, so this runs again and has to be a no-op the second
- * time. The previous version inserted the bar and then immediately dereferenced
- * `querySelector('.presale-first-bar-content')` — on any template where the insert had
- * silently failed, that was a TypeError that stopped the rest of the script.
+ * The shop's own purchase block stays exactly where the template put it. The widget is
+ * inserted before it, and the only changes inside the shop's markup are the words of the
+ * conversion button and of the availability label, both put back when the campaign ends.
+ *
+ * Every step is guarded and idempotent. Shoptet re-renders parts of the page when a
+ * variant is chosen, so this runs again and has to be a no-op the second time.
  */
 
-import { ADD_TO_CART_ANCHORS, AVAILABILITY_ANCHORS, resolveProductAnchor } from './anchors.js';
+import { availabilityLabel, conversionButtons, widgetPlacement } from './anchors.js';
 import { buildBar } from './bar.js';
-import { atDeadline } from './countdown.js';
-import { claim, labelOf, queryFirst, setLabel } from './dom.js';
+import { atDeadline, parseInstant } from './countdown.js';
+import { claim, labelOf, setLabel } from './dom.js';
 import { installTheme } from './theme.js';
 
 /**
@@ -23,56 +24,68 @@ import { installTheme } from './theme.js';
 const ORIGINAL_LABEL = 'data-cfp-original-label';
 
 /**
- * When the campaign ends, or never.
+ * Swap an element's own words for ours, remembering the original for the deadline.
  *
- * @param {PresaleCampaign} campaign
- * @returns {number | null}
+ * @param {HTMLElement} node
+ * @param {string} text
+ * @param {number | null} ends
+ * @param {() => void} [restoreMore] anything else to undo at the deadline
  */
-function deadline(campaign) {
-  const endsAt = campaign.endsAt ? Date.parse(campaign.endsAt) : NaN;
-  return Number.isNaN(endsAt) ? null : endsAt;
-}
-
-/**
- * @param {PresaleCampaign} campaign
- * @param {Translate} t
- */
-function relabelAddToCart(campaign, t) {
-  const button = queryFirst(document, ADD_TO_CART_ANCHORS);
-  if (!button || !claim(button, 'cta')) return;
-
-  // Only the button's own words are replaced. Most templates put an icon element inside
-  // the conversion button, and writing `textContent` — as this used to — deleted it.
-  button.setAttribute(ORIGINAL_LABEL, labelOf(button));
-  setLabel(button, t('preorder'));
-
-  const ends = deadline(campaign);
+function relabel(node, text, ends, restoreMore) {
+  node.setAttribute(ORIGINAL_LABEL, labelOf(node));
+  setLabel(node, text);
   if (ends === null) return;
-
-  // And the restore this attribute was written for actually happens. A customer sitting
-  // on the page as the campaign runs out was being offered a pre-order that no longer
-  // existed, with a countdown next to it reading "ended".
-  atDeadline(button, ends, () => {
-    setLabel(button, button.getAttribute(ORIGINAL_LABEL) ?? '');
+  atDeadline(node, ends, () => {
+    setLabel(node, node.getAttribute(ORIGINAL_LABEL) ?? '');
+    restoreMore?.();
   });
 }
 
 /**
- * @param {PresaleCampaign} campaign
+ * Shoptet names its conversion buttons with `aria-label="Do košíku <product>"`, which a
+ * screen reader announces instead of the visible words. The same words are swapped there,
+ * so the spoken name keeps matching what the button says.
+ *
+ * @param {HTMLElement} button
+ * @param {string} original the visible words before the swap
+ * @param {string} text
+ * @returns {() => void} puts the original name back
+ */
+function relabelName(button, original, text) {
+  const name = button.getAttribute('aria-label');
+  if (!name || !original || !name.includes(original)) return () => {};
+  button.setAttribute('aria-label', name.replace(original, text));
+  return () => button.setAttribute('aria-label', name);
+}
+
+/**
+ * Only the button's own words are replaced; the icon most templates put inside it stays.
+ * A button without words of its own (Tango's narrow-screen cart icon) is left alone.
+ *
+ * @param {number | null} ends
+ * @param {Translate} t
+ */
+function relabelButtons(ends, t) {
+  for (const button of conversionButtons()) {
+    const original = labelOf(button);
+    if (original === '' || !claim(button, 'cta')) continue;
+    const restoreName = relabelName(button, original, t('preorder'));
+    relabel(button, t('preorder'), ends, restoreName);
+  }
+}
+
+/**
+ * @param {number | null} ends
  * @param {Translate} t
  * @param {boolean} showFallbackHint
  */
-function relabelAvailability(campaign, t, showFallbackHint) {
-  const label = queryFirst(document, AVAILABILITY_ANCHORS);
+function relabelAvailability(ends, t, showFallbackHint) {
+  const label = availabilityLabel();
   if (!label || !claim(label, 'availability')) return;
 
-  label.setAttribute(ORIGINAL_LABEL, labelOf(label));
-  setLabel(label, t('presaleLabel'));
-  label.classList.add('cfp-availability');
-
-  // The compact bar carries this explanation when it rendered successfully. Keep a
-  // small fallback beside the availability value on a template where no insertion point
-  // exists, so the product never loses the reason customers can order it now.
+  // The widget carries this explanation when it rendered. Keep a small fallback beside
+  // the availability value on a page where it could not be placed, so the product never
+  // loses the reason customers can order it now.
   const hint = showFallbackHint ? document.createElement('span') : null;
   if (hint) {
     hint.className = 'cfp-hint';
@@ -81,101 +94,43 @@ function relabelAvailability(campaign, t, showFallbackHint) {
     label.insertAdjacentElement('afterend', hint);
   }
 
-  const ends = deadline(campaign);
-  if (ends === null) return;
-
-  atDeadline(label, ends, () => {
-    setLabel(label, label.getAttribute(ORIGINAL_LABEL) ?? '');
+  label.classList.add('cfp-availability');
+  relabel(label, t('presaleLabel'), ends, () => {
     label.classList.remove('cfp-availability');
     hint?.remove();
   });
 }
 
 /**
- * Shoptet can replace the anchor during a variant update while leaving injected siblings
- * in the DOM. Claiming the new anchor alone would therefore leave two bars (and two hints)
- * on the page. Only call this when the anchor is genuinely new; a normal re-run must keep
- * the existing decoration in place.
+ * Shoptet can replace the purchase block during a variant update while leaving the
+ * widget before it in the DOM. Claiming the new block alone would then leave two widgets
+ * (and two hints) on the page. Only call this when the block is genuinely new.
  */
 function removeStaleDecorations() {
   document.querySelectorAll('.cfp-bar, .cfp-hint').forEach((node) => node.remove());
 }
 
 /**
- * @param {HTMLElement | null} button
- * @returns {HTMLElement | null}
- */
-function purchaseBlock(button) {
-  if (!button) return null;
-  return button.closest('.add-to-cart') ?? button.closest('form') ?? button;
-}
-
-/**
- * Move the shop's own purchase block into the widget, leaving a recoverable marker in its
- * original position. The marker matters when the deadline expires: the product controls
- * must return to the host page instead of disappearing with the widget.
- *
- * @param {HTMLElement} bar
- * @param {HTMLElement} purchase
- * @returns {() => void}
- */
-function mountPurchase(bar, purchase) {
-  const slot = bar.querySelector('.cfp-bar__purchase');
-  if (!slot) return () => {};
-
-  const marker = document.createComment('cfp-purchase-position');
-  purchase.replaceWith(marker);
-  slot.append(purchase);
-  purchase.classList.add('cfp-bar__native-purchase');
-
-  return () => {
-    if (marker.isConnected) marker.replaceWith(purchase);
-    else if (bar.isConnected) bar.replaceWith(purchase);
-    purchase.classList.remove('cfp-bar__native-purchase');
-  };
-}
-
-/**
- * @param {HTMLElement} anchor
- * @param {HTMLElement | null} purchase
  * @param {PresaleCampaign} campaign
  * @param {Translate} t
- * @returns {boolean}
+ * @returns {boolean} whether the widget is on the page
  */
-function insertBar(anchor, purchase, campaign, t) {
-  let restorePurchase = () => {};
-  const bar = buildBar(
-    campaign,
-    t,
-    undefined,
-    () => {
-      restorePurchase();
-      bar.remove();
-    },
-    purchase === null,
-  );
+function insertBar(campaign, t) {
+  const placement = widgetPlacement();
+  if (!placement || !claim(placement.node, 'anchor')) return false;
 
-  if (purchase === anchor) {
-    anchor.replaceWith(bar);
-    restorePurchase = mountPurchase(bar, purchase);
-    return true;
-  }
-
-  const inserted = anchor.insertAdjacentElement('afterend', bar) !== null;
-  if (inserted && purchase && !bar.contains(purchase)) {
-    restorePurchase = mountPurchase(bar, purchase);
-  }
-  return inserted;
+  removeStaleDecorations();
+  const bar = buildBar(campaign, t, () => bar.remove());
+  return placement.node.insertAdjacentElement(placement.position, bar) !== null;
 }
 
 /**
  * @param {ReadonlyArray<PresaleCampaign>} campaigns
  * @param {string} productGuid
- * @param {string} template
  * @param {Translate} t
  * @param {StorefrontTheme} [theme]
  */
-export function applyProductPage(campaigns, productGuid, template, t, theme) {
+export function applyProductPage(campaigns, productGuid, t, theme) {
   const campaign = campaigns.find((entry) => entry.productGuid === productGuid);
   if (!campaign) return;
 
@@ -184,31 +139,17 @@ export function applyProductPage(campaigns, productGuid, template, t, theme) {
   // comparing the rendered availability text against the Czech word for "in stock".
   if (campaign.inStock) return;
 
-  let anchor = resolveProductAnchor(template);
+  // Once, before anything is inserted, and resolved from where the widget goes. It is a
+  // sibling of the purchase block, so the surface its ink has to be legible against is
+  // the parent's, not whatever the template paints behind the price.
+  installTheme(widgetPlacement()?.node.parentElement ?? document.body, theme);
 
-  const button = queryFirst(document, ADD_TO_CART_ANCHORS);
-  const purchase = purchaseBlock(button);
-  // Some templates place the preferred price anchor inside the purchase block. The
-  // block is the useful unit in that case, because it already owns the form, quantity
-  // and conversion button we want to keep together.
-  if (anchor && purchase?.contains(anchor)) anchor = purchase;
-
-  // Once, before anything is inserted, and resolved from the anchor: the surface the ink
-  // has to be legible against is whatever the template paints *there*, not whatever
-  // `body` happens to be. The availability label below is themed too, so this cannot
-  // hang off the bar being inserted successfully.
-  installTheme(anchor ?? document.body, theme);
-
-  let barInserted = false;
-  if (anchor && claim(anchor, 'anchor')) {
-    removeStaleDecorations();
-    barInserted = insertBar(anchor, purchase, campaign, t);
-  }
-
-  relabelAddToCart(campaign, t);
-  // A variant update can replace only the availability node while the original anchor and
-  // strip stay in place. In that case the current run did not insert a bar, but the page
-  // already has one, so adding the fallback note would recreate the duplicate we removed.
+  const barInserted = insertBar(campaign, t);
+  const ends = parseInstant(campaign.endsAt);
+  relabelButtons(ends, t);
+  // A variant update can replace only the availability node while the widget stays in
+  // place. In that case this run did not insert a widget, but the page already has one,
+  // so adding the fallback note would recreate the duplicate removed above.
   const hasBar = document.querySelector('.cfp-bar') !== null;
-  relabelAvailability(campaign, t, !barInserted && !hasBar);
+  relabelAvailability(ends, t, !barInserted && !hasBar);
 }

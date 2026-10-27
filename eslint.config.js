@@ -17,11 +17,8 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.browser,
-        // Shoptet defines these on the storefront. Declared so `no-undef` passes, but
-        // every read of them goes through src/shoptet.js, which checks they exist —
-        // referencing them directly is what killed the old listener on templates that
-        // do not define them.
-        shoptet: 'readonly',
+        // Shoptet defines this on every storefront page before custom codes run. Only
+        // src/shoptet.js reads it.
         getShoptetDataLayer: 'readonly',
       },
     },

@@ -9,6 +9,9 @@
 import { copyText } from './clipboard.js';
 import { el, setText } from './dom.js';
 
+/** How long the button says "copied" before it offers to copy again. */
+const COPY_FEEDBACK_MS = 2400;
+
 /**
  * @typedef {ReturnType<import('./i18n.js').translator>} Translate
  * @typedef {{ compact?: boolean, discountPercent?: number | null, showBenefit?: boolean }} CodeRowOptions
@@ -38,7 +41,10 @@ function wireCopyButton(button, buttonLabel, status, code, t, compact) {
         setText(buttonLabel, t(compact ? 'copyShort' : 'copyCode'));
         if (idleAriaLabel) button.setAttribute('aria-label', idleAriaLabel);
         button.classList.remove('cfp-bar__copy--success');
-      }, 2400);
+        // Emptied, so the same message written by the next copy is a change the live
+        // region announces again.
+        setText(status, '');
+      }, COPY_FEEDBACK_MS);
     });
   });
 }

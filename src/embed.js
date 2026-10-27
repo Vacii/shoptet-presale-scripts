@@ -85,21 +85,3 @@ export function embedUrl(value) {
 
   return null;
 }
-
-/** Extensions that mean a file the browser plays itself, rather than a player page. */
-const VIDEO_FILE = /\.(?:mp4|webm|ogv|ogg|mov|m4v)$/i;
-
-/**
- * What a pasted URL most likely is, used to preselect the media type in the settings UI.
- *
- * A guess here is harmless: the merchant sees the choice and can change it. The renderer
- * never guesses — it uses the stored `kind`.
- *
- * @param {string | null | undefined} value
- * @returns {'image' | 'video' | 'embed'}
- */
-export function detectMediaKind(value) {
-  if (embedUrl(value)) return 'embed';
-  const parsed = parseHttpUrl(String(value ?? ''));
-  return parsed && VIDEO_FILE.test(parsed.pathname) ? 'video' : 'image';
-}

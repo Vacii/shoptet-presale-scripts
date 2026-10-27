@@ -9,11 +9,11 @@ import './styles/bar.css';
 import './styles/landing.css';
 
 import { applyCatalogue } from './catalogue.js';
-import { activeCampaigns, landingPath, load, loadLanding } from './config.js';
+import { activeCampaigns, activeLanding, load } from './config.js';
 import { translator } from './i18n.js';
 import { applyLanding } from './landing.js';
 import { applyProductPage } from './product-page.js';
-import { currentProductGuid, onContentReady, pageType, templateName } from './shoptet.js';
+import { currentProductGuid, onContentReady, pageType } from './shoptet.js';
 import { currentPath } from './url.js';
 
 const PRODUCT_PAGE = 'productDetail';
@@ -30,8 +30,7 @@ const LISTING_PAGES = [
  * @param {ReturnType<typeof translator>} t
  */
 function maybeRenderLanding(config, t) {
-  if (landingPath(config) !== currentPath()) return;
-  const landing = loadLanding(config);
+  const landing = activeLanding(config);
   if (landing) onContentReady(() => applyLanding(landing, t, currentPath(), config.theme));
 }
 
@@ -43,7 +42,8 @@ function start() {
   const type = pageType();
 
   // The landing page is an ordinary article, so it is not one of the page types below.
-  // Checking the path first is what stops the addon touching the shop's other articles.
+  // `applyLanding` compares the path before touching anything, which is what keeps the
+  // addon away from the shop's other articles.
   maybeRenderLanding(config, t);
 
   if (type !== PRODUCT_PAGE && !LISTING_PAGES.includes(type)) return;
@@ -56,7 +56,7 @@ function start() {
     if (campaigns.length === 0) return;
 
     if (type === PRODUCT_PAGE) {
-      applyProductPage(campaigns, currentProductGuid(), templateName(), t, config.theme);
+      applyProductPage(campaigns, currentProductGuid(), t, config.theme);
       return;
     }
     applyCatalogue(campaigns, t, config.theme);

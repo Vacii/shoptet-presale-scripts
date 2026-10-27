@@ -131,10 +131,20 @@ export function queryFirst(root, selectors) {
  * @returns {boolean} true when this call is the first
  */
 export function claim(node, flag) {
-  const attribute = `data-cfp-${flag}`;
-  if (node.hasAttribute(attribute)) return false;
-  node.setAttribute(attribute, '1');
+  if (isClaimed(node, flag)) return false;
+  node.setAttribute(`data-cfp-${flag}`, '1');
   return true;
+}
+
+/**
+ * Whether `claim` has already been called for this node and flag.
+ *
+ * @param {HTMLElement} node
+ * @param {string} flag
+ * @returns {boolean}
+ */
+export function isClaimed(node, flag) {
+  return node.hasAttribute(`data-cfp-${flag}`);
 }
 
 /**

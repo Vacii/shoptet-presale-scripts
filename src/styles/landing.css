@@ -1,5 +1,5 @@
 /*
- * ART DIRECTION (docs/art-direction.md)
+ * ART DIRECTION (see README.md)
  * Alternating widths: media to the container edge, prose held to 66ch and aligned to the
  * media's left edge, never centred. Tight inside a block, loose between them — that
  * contrast is the rhythm. The grid breaks once, at the countdown.
@@ -17,9 +17,9 @@
  * every installed shop.
  */
 
-/* `--cfp-accent`, `--cfp-on-accent` and `--cfp-accent-ink` are declared on `:root` in
-   bar.css and written there by `installTheme`. Redeclaring them here would shadow the
-   runtime values for this whole subtree. */
+/* `--cfp-accent` and `--cfp-accent-ink` are declared on `:root` in bar.css and written
+   there by `installTheme`. Redeclaring them here would shadow the runtime values for this
+   whole subtree. */
 .cfp-landing {
   --cfp-radius: 0.5em;
 
@@ -197,6 +197,18 @@
 
 .cfp-landing__faq-item + .cfp-landing__faq-item {
   border-top: 0.0625em solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+/* The heading exists for navigation only. Templates style h3 with their own size,
+   margins and case, so it is reset to contribute nothing visible. */
+.cfp-landing__faq-heading {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
 }
 
 .cfp-landing__question {

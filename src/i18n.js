@@ -9,8 +9,8 @@ import { language } from './shoptet.js';
 
 const MESSAGES = {
   cs: {
+    locale: 'cs-CZ',
     preorder: 'Předobjednat',
-    preorderWithDiscount: 'Objednat s předprodejovou slevou',
     presale: 'Předprodej',
     presaleLabel: 'Předobjednávka',
     presaleInfoLead: 'Zatím není skladem.',
@@ -23,8 +23,6 @@ const MESSAGES = {
     copyShort: 'Kopírovat',
     copied: 'Zkopírováno',
     copyFailed: 'Zkopírujte kód ručně',
-    discount: 'Sleva {percent} % na předobjednávku',
-    discountWithCode: 'S kódem ušetříte {percent} %',
     discountShort: 'Sleva {percent} %',
     days: 'd',
     hours: 'h',
@@ -34,10 +32,12 @@ const MESSAGES = {
     hoursLong: 'hodin',
     minutesLong: 'minut',
     secondsLong: 'sekund',
+    video: 'Video',
+    customerPhotos: 'Fotky od zákazníků',
   },
   sk: {
+    locale: 'sk-SK',
     preorder: 'Predobjednať',
-    preorderWithDiscount: 'Objednať s predpredajovou zľavou',
     presale: 'Predpredaj',
     presaleLabel: 'Predobjednávka',
     presaleInfoLead: 'Zatiaľ nie je skladom.',
@@ -50,8 +50,6 @@ const MESSAGES = {
     copyShort: 'Kopírovať',
     copied: 'Skopírované',
     copyFailed: 'Skopírujte kód ručne',
-    discount: 'Zľava {percent} % na predobjednávku',
-    discountWithCode: 'S kódom ušetríte {percent} %',
     discountShort: 'Zľava {percent} %',
     days: 'd',
     hours: 'h',
@@ -61,10 +59,12 @@ const MESSAGES = {
     hoursLong: 'hodín',
     minutesLong: 'minút',
     secondsLong: 'sekúnd',
+    video: 'Video',
+    customerPhotos: 'Fotky od zákazníkov',
   },
   en: {
+    locale: 'en-GB',
     preorder: 'Pre-order',
-    preorderWithDiscount: 'Order with pre-sale discount',
     presale: 'Pre-sale',
     presaleLabel: 'Pre-order',
     presaleInfoLead: 'Not in stock yet.',
@@ -77,8 +77,6 @@ const MESSAGES = {
     copyShort: 'Copy',
     copied: 'Copied',
     copyFailed: 'Copy the code by hand',
-    discount: '{percent}% off pre-orders',
-    discountWithCode: 'Save {percent}% with code',
     discountShort: 'Save {percent}%',
     days: 'd',
     hours: 'h',
@@ -88,10 +86,12 @@ const MESSAGES = {
     hoursLong: 'hours',
     minutesLong: 'minutes',
     secondsLong: 'seconds',
+    video: 'Video',
+    customerPhotos: 'Customer photos',
   },
   hu: {
+    locale: 'hu-HU',
     preorder: 'Előrendelés',
-    preorderWithDiscount: 'Rendelés elővásárlási kedvezménnyel',
     presale: 'Elővásárlás',
     presaleLabel: 'Előrendelés',
     presaleInfoLead: 'Még nincs raktáron.',
@@ -104,8 +104,6 @@ const MESSAGES = {
     copyShort: 'Másolás',
     copied: 'Másolva',
     copyFailed: 'Másolja ki a kódot kézzel',
-    discount: '{percent}% kedvezmény előrendelésre',
-    discountWithCode: 'A kóddal {percent}% kedvezmény',
     discountShort: '{percent}% kedvezmény',
     days: 'n',
     hours: 'ó',
@@ -115,6 +113,8 @@ const MESSAGES = {
     hoursLong: 'óra',
     minutesLong: 'perc',
     secondsLong: 'másodperc',
+    video: 'Videó',
+    customerPhotos: 'Vásárlói fotók',
   },
 };
 
@@ -125,7 +125,7 @@ const MESSAGES = {
  * @returns {(key: MessageKey, vars?: Record<string, string | number>) => string}
  */
 export function translator(locale = language()) {
-  const catalogue = MESSAGES[locale] ?? MESSAGES.cs;
+  const catalogue = MESSAGES[locale] ?? MESSAGES.en;
   return (key, vars) => {
     const template = catalogue[key];
     if (!vars) return template;

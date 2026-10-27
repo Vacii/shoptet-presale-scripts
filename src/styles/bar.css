@@ -1,23 +1,22 @@
 /*
- * ART DIRECTION (docs/art-direction.md)
- * A light, self-contained product widget with a quiet neutral surface and one borrowed
- * accent. The countdown is split into four still cells, then the ordering condition and
- * discount action follow in the same card. The host purchase control is mounted in the
- * card, so price, quantity and the actual cart action stay one element.
+ * ART DIRECTION (see README.md)
+ * A light, self-contained card with a quiet neutral surface and one borrowed accent. It
+ * sits directly before the shop's own purchase block and never reaches into it: the
+ * countdown in four still cells, then why the product can be ordered now, then the
+ * discount and its code, right above the price and button they apply to.
  * Register: light utility panel. Signature: four tabular countdown cells. The accent is
  * always supplied by `installTheme`, so a future merchant colour setting has one seam.
- * Kill list: no fixed/sticky, no shadow, no gradient, no !important, no moving countdown.
+ * Kill list: no fixed/sticky, no shadow, no gradient, no !important, no moving countdown,
+ * no rule for the shop's own markup.
  *
  * This stylesheet is loaded into every page of somebody else's shop, so every selector
- * here starts with `cfp-`. The neutral surfaces are mixed from the host text colour and
+ * here is a `cfp-` class. The neutral surfaces are mixed from the host text colour and
  * the accent, which keeps the light widget usable inside light and dark templates alike.
- * The accent stays quiet here: it tints the countdown cells and badge, while solid colour
- * is reserved for the purchase action.
+ * The accent stays quiet: it tints the countdown cells, the badge and the discount.
  */
 
 :root {
   --cfp-accent: #1b1b1b;
-  --cfp-on-accent: #fff;
   --cfp-accent-ink: currentColor;
   --cfp-surface: #fff;
 }
@@ -150,20 +149,6 @@
   overflow-wrap: anywhere;
 }
 
-.cfp-bar__clock--ended .cfp-bar__caption,
-.cfp-bar__clock--ended .cfp-bar__date {
-  display: none;
-}
-
-.cfp-bar__clock--ended .cfp-bar__countdown {
-  display: block;
-  margin-top: 0;
-  color: inherit;
-  font-size: 1em;
-  font-weight: 400;
-  opacity: 0.7;
-}
-
 .cfp-bar__headline {
   max-width: 100%;
   margin: 0;
@@ -292,10 +277,19 @@
 
 /* --- discount and code ------------------------------------------------------ */
 
+/* The discount badge on its own line, then the code: the last thing before the shop's
+   price, which is where the decision to use it is made. */
+.cfp-bar__offer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
 .cfp-bar__benefit {
   max-width: 100%;
-  align-self: flex-start;
-  margin-top: 1.375em;
+  margin: 0;
   padding: 0.25em 0.625em;
   border-radius: var(--cfp-radius-small);
   background: color-mix(in srgb, var(--cfp-accent) 12%, var(--cfp-surface));
@@ -316,10 +310,10 @@
 }
 
 .cfp-bar__code-row {
+  align-self: stretch;
   justify-content: space-between;
   flex-wrap: nowrap;
   min-width: 0;
-  margin-top: 0.5em;
   padding: 0.5em 0.75em;
   border: 0.0625em dashed color-mix(in srgb, var(--cfp-accent-ink) 70%, transparent);
   border-radius: var(--cfp-radius-small);
@@ -404,310 +398,6 @@
   border-color: var(--cfp-accent-ink);
 }
 
-.cfp-bar__order {
-  max-width: 100%;
-  width: 100%;
-  min-height: 3em;
-  margin: 0;
-  padding: 0.75em 1em;
-  border: 0;
-  border-radius: var(--cfp-radius-small);
-  background: var(--cfp-accent);
-  color: var(--cfp-on-accent);
-  font: inherit;
-  font-size: var(--cfp-type-body);
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: filter var(--cfp-dur-ui) var(--cfp-ease-out);
-}
-
-.cfp-bar__order:hover {
-  filter: brightness(0.94);
-}
-
-.cfp-bar__order:focus-visible {
-  outline: 0.125em solid var(--cfp-accent-ink);
-  outline-offset: 0.125em;
-}
-
-/* --- native purchase block ------------------------------------------------- */
-
-.cfp-bar__checkout {
-  margin: 1.25em calc(-1 * var(--cfp-bar-pad)) calc(-1 * var(--cfp-bar-pad));
-  padding: var(--cfp-bar-pad);
-  border-top: 0.0625em solid color-mix(in srgb, currentColor 10%, transparent);
-  border-radius: 0 0 var(--cfp-radius) var(--cfp-radius);
-  background: color-mix(in srgb, currentColor 2%, var(--cfp-surface));
-}
-
-.cfp-bar__purchase {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-}
-
-.cfp-bar__purchase:empty {
-  display: none;
-}
-
-.cfp-bar .cfp-bar__native-purchase {
-  box-sizing: border-box;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-}
-
-/* These fields belong to the host product details. The widget already has its own
-   availability message and discount code, so showing the host copies here creates the
-   extra rows visible above the price in some Shoptet templates. */
-.cfp-bar__native-purchase [class*='availability'],
-.cfp-bar__native-purchase [class~='detail-parameters'],
-.cfp-bar__native-purchase [class*='product-code'],
-.cfp-bar__native-purchase [class*='p-code'],
-.cfp-bar__native-purchase [class~='code'],
-.cfp-bar__native-purchase [class~='quantity-tooltip'],
-.cfp-bar__native-purchase [class~='quantity-label'],
-.cfp-bar__native-purchase [class~='increase-tooltip'],
-.cfp-bar__native-purchase [class~='decrease-tooltip'] {
-  display: none;
-}
-
-/* Disco and several other templates paint this form as a separate flex panel. Once it
-   is mounted here, the widget owns its layout and neutralises those host dimensions. */
-.cfp-bar .cfp-bar__native-purchase[class~='p-to-cart-block'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-to-cart-block'] {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1em;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='p-final-price-wrapper'] {
-  grid-column: 1;
-  grid-row: 1;
-  min-width: 0;
-  width: auto;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
-}
-
-.cfp-bar .cfp-bar__native-purchase[class~='p-to-cart-block'] > [class~='add-to-cart'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-to-cart-block'] > [class~='add-to-cart'] {
-  display: block;
-  grid-column: 2;
-  grid-row: 1;
-  width: auto;
-  margin: 0;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2.75em minmax(2.75em, 1fr) 2.75em;
-  align-items: stretch;
-  width: min(8.25em, 100%);
-  min-width: 0;
-  height: 2.875em;
-  min-height: 2.875em;
-  margin: 0 0 0 auto;
-  padding: 0;
-  border: 0.0625em solid color-mix(in srgb, currentColor 22%, transparent);
-  border-radius: var(--cfp-radius-small);
-  background: var(--cfp-surface);
-  box-shadow: none;
-  font-size: var(--cfp-type-body);
-  line-height: 1;
-  overflow: hidden;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] label {
-  display: flex;
-  grid-column: 2;
-  grid-row: 1;
-  align-items: stretch;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] button {
-  position: static;
-  inset: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75em;
-  min-width: 2.75em;
-  height: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: 1em;
-  line-height: 1;
-  touch-action: manipulation;
-  cursor: pointer;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] [class~='decrease'] {
-  grid-column: 1;
-  grid-row: 1;
-  border-right: 0.0625em solid color-mix(in srgb, currentColor 12%, transparent);
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] [class~='increase'] {
-  grid-column: 3;
-  grid-row: 1;
-  border-left: 0.0625em solid color-mix(in srgb, currentColor 12%, transparent);
-  font-weight: 700;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] button::before {
-  content: none;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='increase__sign'],
-.cfp-bar .cfp-bar__native-purchase [class~='decrease__sign'] {
-  display: inline;
-  font-size: 1em;
-  line-height: 1;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] button:hover {
-  background: color-mix(in srgb, currentColor 7%, transparent);
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] button:focus-visible {
-  outline: 0.125em solid var(--cfp-accent-ink);
-  outline-offset: -0.125em;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] input {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: var(--cfp-type-meta);
-  line-height: 1;
-  text-align: center;
-  appearance: textfield;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] input:focus-visible {
-  outline: 0.125em solid var(--cfp-accent-ink);
-  outline-offset: -0.125em;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] input::-webkit-inner-spin-button,
-.cfp-bar .cfp-bar__native-purchase [class~='quantity'] input::-webkit-outer-spin-button {
-  margin: 0;
-  appearance: none;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='add-to-cart-button'],
-.cfp-bar .cfp-bar__native-purchase button[type='submit'],
-.cfp-bar .cfp-bar__native-purchase [class~='btn-conversion'] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 3em;
-  margin-top: 0.75em;
-  padding: 0.625em 1em;
-  border: 0;
-  border-radius: var(--cfp-radius-small);
-  background: var(--cfp-accent);
-  color: var(--cfp-on-accent);
-  font: inherit;
-  font-size: var(--cfp-type-body);
-  font-weight: 700;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  touch-action: manipulation;
-  cursor: pointer;
-  appearance: none;
-}
-
-.cfp-bar .cfp-bar__native-purchase[class~='p-to-cart-block'] > [class~='add-to-cart-button'],
-.cfp-bar .cfp-bar__native-purchase[class~='p-to-cart-block'] > button[type='submit'],
-.cfp-bar .cfp-bar__native-purchase[class~='p-to-cart-block'] > [class~='btn-conversion'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-to-cart-block'] > [class~='add-to-cart-button'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-to-cart-block'] > button[type='submit'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-to-cart-block'] > [class~='btn-conversion'] {
-  grid-column: 1 / -1;
-  margin-top: 0;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='price-final'],
-.cfp-bar .cfp-bar__native-purchase [class~='p-final-price'] {
-  display: block;
-  max-width: 100%;
-  margin: 0;
-  color: inherit;
-  font-size: 1.75em;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-}
-
-/* The holder is nested inside the price in Disco. Repeating the scale on both nodes
-   compounds 1.75em into an oversized 49px price, so it deliberately inherits here. */
-.cfp-bar .cfp-bar__native-purchase [class~='price-final-holder'] {
-  display: inline;
-  margin: 0;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='add-to-cart-button']:hover,
-.cfp-bar .cfp-bar__native-purchase button[type='submit']:hover,
-.cfp-bar .cfp-bar__native-purchase [class~='btn-conversion']:hover {
-  filter: brightness(0.94);
-}
-
-.cfp-bar .cfp-bar__native-purchase [class~='add-to-cart-button']:focus-visible,
-.cfp-bar .cfp-bar__native-purchase button[type='submit']:focus-visible,
-.cfp-bar .cfp-bar__native-purchase [class~='btn-conversion']:focus-visible {
-  outline: 0.125em solid var(--cfp-accent-ink);
-  outline-offset: 0.125em;
-}
-
 /* The visual label is updated in the button. This status remains available to assistive
    technology without adding a third visible phrase beside the code. */
 .cfp-bar__status {
@@ -723,13 +413,8 @@
 }
 
 .cfp-bar__info {
-  min-width: 0;
-  max-width: 60ch;
-  margin-top: 1em;
-  font-size: var(--cfp-type-body);
-  line-height: 1.5;
-  opacity: 0.68;
-  overflow-wrap: anywhere;
+  display: block;
+  margin-top: 0.375em;
 }
 
 /* --- product availability and catalogue badge ------------------------------ */

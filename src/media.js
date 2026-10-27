@@ -19,7 +19,10 @@ import { embedUrl } from './embed.js';
  */
 
 /**
- * @typedef {{ priority?: boolean }} MediaOptions
+ * @typedef {object} MediaOptions
+ * @property {boolean} [priority] the image is above the fold and should load first
+ * @property {string} [label] accessible name for a video or player whose merchant left
+ *   the description empty
  */
 
 /**
@@ -43,22 +46,40 @@ function imageAttributes(media, options) {
  *
  * @param {Media} media
  * @param {string} className
+ * @param {string} title
  * @returns {HTMLElement | null}
  */
-function buildEmbed(media, className) {
+function buildEmbed(media, className, title) {
   const src = embedUrl(media.url);
   if (!src) return null;
   return el('iframe', {
     className: `${className} cfp-landing__media--embed`,
     attrs: {
       src,
-      title: media.alt ?? '',
+      title,
       loading: 'lazy',
       referrerpolicy: 'strict-origin-when-cross-origin',
       allow: 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen',
       allowfullscreen: '',
     },
   });
+}
+
+/**
+ * Not autoplayed: the customer starts it, with the controls the browser provides.
+ *
+ * @param {Media} media
+ * @param {string} className
+ * @param {string} name
+ * @returns {HTMLElement | null}
+ */
+function buildVideo(media, className, name) {
+  const video = el('video', {
+    className,
+    attrs: { playsinline: '', controls: '', preload: 'metadata' },
+  });
+  if (name) video.setAttribute('aria-label', name);
+  return setUrl(video, 'src', media.url) ? video : null;
 }
 
 /**
@@ -70,24 +91,12 @@ function buildEmbed(media, className) {
 export function buildMedia(media, className, options = {}) {
   if (!media?.url) return null;
 
-  if (media.kind === 'embed') return buildEmbed(media, className);
+  // A player without a name is announced as an unnamed frame or video, so an empty
+  // description falls back to the generic one the caller passes in.
+  const name = media.alt || options.label || '';
+  if (media.kind === 'embed') return buildEmbed(media, className, name);
 
-  if (media.kind === 'video') {
-    const video = el('video', {
-      className,
-      // Autoplaying video needs controls: without them there is no way to stop it, which
-      // is a WCAG 2.2.2 failure for anything that moves for more than five seconds.
-      attrs: {
-        muted: '',
-        loop: '',
-        playsinline: '',
-        controls: '',
-        preload: 'metadata',
-        'aria-label': media.alt ?? '',
-      },
-    });
-    return setUrl(video, 'src', media.url) ? video : null;
-  }
+  if (media.kind === 'video') return buildVideo(media, className, name);
 
   const image = el('img', {
     className,
@@ -101,12 +110,15 @@ export function buildMedia(media, className, options = {}) {
  *
  * @param {HTMLElement} node
  * @param {{ href?: string | null, linkLabel?: string | null }} link
+ * @param {string | null} [fallbackLabel] the link's name when the merchant gave it none
+ *   and the content cannot name it either, such as a picture without a description
  * @returns {HTMLElement}
  */
-export function withLink(node, link) {
+export function withLink(node, link, fallbackLabel) {
   if (!link.href) return node;
   const anchor = el('a', { className: 'cfp-landing__link' }, [node]);
   if (!setUrl(anchor, 'href', link.href)) return node;
-  if (link.linkLabel) anchor.setAttribute('aria-label', link.linkLabel);
+  const label = link.linkLabel || fallbackLabel;
+  if (label) anchor.setAttribute('aria-label', label);
   return anchor;
 }

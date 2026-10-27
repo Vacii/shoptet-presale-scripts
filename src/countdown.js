@@ -24,6 +24,20 @@ const MS_PER_DAY = MS_PER_HOUR * 24;
 const MAX_TIMEOUT_MS = 2 ** 31 - 1;
 
 /**
+ * A configured moment as epoch milliseconds, or null when there is none or it does not
+ * parse. Every deadline in the bundle goes through here, so an invalid date means "no
+ * deadline" everywhere instead of a timer that fires at once.
+ *
+ * @param {string | null | undefined} value
+ * @returns {number | null}
+ */
+export function parseInstant(value) {
+  if (!value) return null;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+/**
  * Run something once, when the campaign ends.
  *
  * A single timer rather than a second ticking interval, because the caller does not need
@@ -36,6 +50,7 @@ const MAX_TIMEOUT_MS = 2 ** 31 - 1;
  * @returns {() => void} cancel
  */
 export function atDeadline(node, endsAt, run) {
+  if (!Number.isFinite(endsAt)) return () => {};
   const delay = endsAt - Date.now();
   if (delay <= 0) {
     run();
@@ -90,6 +105,7 @@ export function formatRemaining(remaining, unit) {
  * @returns {() => void} stop
  */
 export function startCountdown(node, endsAt, render) {
+  if (!Number.isFinite(endsAt)) return () => {};
   let timer = 0;
   let finished = false;
 

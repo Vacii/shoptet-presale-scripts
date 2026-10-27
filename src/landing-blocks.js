@@ -11,7 +11,7 @@
  */
 
 import { buildCodeRow } from './code-row.js';
-import { formatRemaining, startCountdown } from './countdown.js';
+import { formatRemaining, parseInstant, startCountdown } from './countdown.js';
 import { el, setText } from './dom.js';
 import { buildMedia, withLink } from './media.js';
 
@@ -43,24 +43,33 @@ function textParts(block) {
 
 /**
  * @param {any} block
- * @param {Translate} _t
+ * @param {Translate} t
  * @param {RenderOptions} [options]
  * @returns {HTMLElement | null}
  */
-function renderBanner(block, _t, options) {
-  const media = buildMedia(block.media, 'cfp-landing__media', options);
+function renderBanner(block, t, options) {
+  const media = buildMedia(block.media, 'cfp-landing__media', { ...options, label: t('video') });
   if (!media) return null;
-  const children = [withLink(media, block.media ?? {}), ...textParts(block)];
+  // A linked picture with no description would be a link with no name. The block's own
+  // heading says what the picture is about, so it names the link instead.
+  const fallback = block.media?.alt ? null : block.heading || block.subheading;
+  const children = [withLink(media, block.media ?? {}, fallback), ...textParts(block)];
   return el('div', { className: `cfp-landing__block cfp-landing__block--${block.type}` }, children);
 }
 
 /**
  * @param {any} block
+ * @param {Translate} t
  * @returns {HTMLElement | null}
  */
-function renderCompare(block) {
-  const desktop = buildMedia(block.desktop, 'cfp-landing__media cfp-landing__media--desktop');
-  const mobile = buildMedia(block.mobile, 'cfp-landing__media cfp-landing__media--mobile');
+function renderCompare(block, t) {
+  const options = { label: t('video') };
+  const desktop = buildMedia(
+    block.desktop,
+    'cfp-landing__media cfp-landing__media--desktop',
+    options,
+  );
+  const mobile = buildMedia(block.mobile, 'cfp-landing__media cfp-landing__media--mobile', options);
   if (!desktop && !mobile) return null;
 
   // Both are in the DOM and CSS chooses; the previous stylesheet tried to hide one with
@@ -86,12 +95,13 @@ function renderSale(block, t) {
 
 /**
  * @param {any} block
+ * @param {Translate} t
  * @returns {HTMLElement | null}
  */
-function renderUsps(block) {
+function renderUsps(block, t) {
   const items = (block.items ?? []).map(
     /** @param {UspItem} item */ (item) => {
-      const media = buildMedia(item.media, 'cfp-landing__usp-media');
+      const media = buildMedia(item.media, 'cfp-landing__usp-media', { label: t('video') });
       const parts = media ? [media] : [];
       parts.push(el('h3', { className: 'cfp-landing__usp-title', text: item.title ?? '' }));
       if (item.text) parts.push(el('p', { className: 'cfp-landing__usp-text', text: item.text }));
@@ -106,11 +116,11 @@ function renderUsps(block) {
 
 /**
  * @param {any} block
- * @param {Translate} _t
+ * @param {Translate} t
  * @param {RenderOptions} [options]
  * @returns {HTMLElement | null}
  */
-function renderUgc(block, _t, options) {
+function renderUgc(block, t, options) {
   const lead = options?.galleryLead;
   const sourceItems = lead?.kind === 'image' ? [lead, ...(block.items ?? [])] : (block.items ?? []);
   const seen = new Set();
@@ -122,7 +132,10 @@ function renderUgc(block, _t, options) {
         return true;
       },
     )
-    .map(/** @param {Media} item */ (item) => buildMedia(item, 'cfp-landing__ugc-media'))
+    .map(
+      /** @param {Media} item */ (item) =>
+        buildMedia(item, 'cfp-landing__ugc-media', { label: t('video') }),
+    )
     .filter(/** @param {HTMLElement | null} node */ (node) => node !== null)
     .map(
       /** @param {HTMLElement} node */ (node) =>
@@ -133,7 +146,16 @@ function renderUgc(block, _t, options) {
   // Scroll-snap, not a carousel library. Three carousels were the entire reason the old
   // bundle shipped 166 kB of Swiper to every page of every shop.
   return el('div', { className: 'cfp-landing__block cfp-landing__block--ugc' }, [
-    el('ul', { className: 'cfp-landing__rail', attrs: { tabindex: '0', role: 'list' } }, items),
+    el(
+      'ul',
+      {
+        className: 'cfp-landing__rail',
+        // Focusable so the rail scrolls from the keyboard, and named so a screen reader
+        // announces what the list is when focus lands on it.
+        attrs: { tabindex: '0', role: 'list', 'aria-label': t('customerPhotos') },
+      },
+      items,
+    ),
   ]);
 }
 
@@ -165,7 +187,11 @@ function renderFaqItem(item) {
     panel.toggleAttribute('hidden', open);
   });
 
-  return el('div', { className: 'cfp-landing__faq-item' }, [button, panel]);
+  // The heading around the button lets screen reader users jump between questions.
+  return el('div', { className: 'cfp-landing__faq-item' }, [
+    el('h3', { className: 'cfp-landing__faq-heading' }, [button]),
+    panel,
+  ]);
 }
 
 /**
@@ -190,8 +216,8 @@ function renderFaq(block) {
  * @returns {HTMLElement | null}
  */
 function renderCountdown(block, t) {
-  const endsAt = block.endsAt ? Date.parse(block.endsAt) : NaN;
-  if (Number.isNaN(endsAt)) return null;
+  const endsAt = parseInstant(block.endsAt);
+  if (endsAt === null) return null;
 
   const value = el('time', {
     className: 'cfp-landing__countdown',

@@ -3,14 +3,14 @@
  *
  * The addon writes the configuration into the shop's own `<head>` through Shoptet's
  * template-include API, so the common case is reading a `<script type="application/json">`
- * that is already in the document: no request, no waiting, no layout shift. See
- * `docs/config-delivery.md`.
+ * that is already in the document: no request, no waiting, no layout shift. README.md
+ * describes the payload.
  *
  * The complete configuration, including the published landing page, must fit in the
  * 8192-character snippet. The admin API rejects saves that would exceed that limit.
  */
 
-import { normalisePath } from './url.js';
+import { parseInstant } from './countdown.js';
 
 export const SNIPPET_ID = 'cfp-config';
 
@@ -29,7 +29,10 @@ export const SNIPPET_ID = 'cfp-config';
  * @property {string | null} [discountCode]
  * @property {number | null} [discountPercent]
  * @property {boolean} [inStock]
- * @property {string | null} [availabilityLabel]
+ */
+
+/**
+ * @typedef {{ block: { type?: string } & Record<string, unknown> }} LandingEntry
  */
 
 /**
@@ -37,15 +40,12 @@ export const SNIPPET_ID = 'cfp-config';
  * @property {string} urlPath
  * @property {string | null} [title]
  * @property {string | null} [endsAt]
- * @property {ReadonlyArray<{ block: unknown }>} [blocks]
+ * @property {ReadonlyArray<LandingEntry>} blocks
  */
 
 /**
  * @typedef {object} PresaleConfig
- * @property {number} [v]
- * @property {number} [eshopId]
  * @property {ReadonlyArray<PresaleCampaign>} products
- * @property {string | null} [landingPath]
  * @property {LandingConfig | null} [landing]
  * @property {StorefrontTheme} [theme]
  * @property {boolean} [partial]
@@ -53,21 +53,56 @@ export const SNIPPET_ID = 'cfp-config';
  */
 
 /**
- * Validate the inline payload and derive a path for existing callers.
+ * @param {unknown} value
+ * @returns {value is Record<string, unknown>}
+ */
+function isRecord(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * @param {unknown} entry
+ * @returns {entry is PresaleCampaign}
+ */
+function isCampaign(entry) {
+  return isRecord(entry) && typeof entry.productGuid === 'string' && entry.productGuid !== '';
+}
+
+/**
+ * @param {unknown} entry
+ * @returns {entry is LandingEntry}
+ */
+function isLandingEntry(entry) {
+  return isRecord(entry) && isRecord(entry.block);
+}
+
+/**
+ * @param {unknown} value
+ * @returns {LandingConfig | null}
+ */
+function asLanding(value) {
+  if (!isRecord(value) || typeof value.urlPath !== 'string' || value.urlPath === '') {
+    return null;
+  }
+  const blocks = Array.isArray(value.blocks) ? value.blocks.filter(isLandingEntry) : [];
+  return { .../** @type {LandingConfig} */ (value), blocks };
+}
+
+/**
+ * The one place the payload's shape is checked. A malformed entry is dropped here, so a
+ * single `null` campaign or block costs only itself and the rest of the code can rely
+ * on what it gets.
  *
  * @param {unknown} value
  * @returns {PresaleConfig | null}
  */
 function asConfig(value) {
-  if (!value || typeof value !== 'object') return null;
-  const record = /** @type {{ products?: unknown, landing?: LandingConfig | null }} */ (value);
-  if (!Array.isArray(record.products)) return null;
-
-  const config = /** @type {PresaleConfig} */ (value);
-  if (!config.landingPath && record.landing?.urlPath) {
-    config.landingPath = record.landing.urlPath;
-  }
-  return config;
+  if (!isRecord(value) || !Array.isArray(value.products)) return null;
+  return {
+    .../** @type {PresaleConfig} */ (value),
+    products: value.products.filter(isCampaign),
+    landing: asLanding(value.landing),
+  };
 }
 
 /**
@@ -95,17 +130,6 @@ export function load() {
 }
 
 /**
- * The landing page's blocks.
- *
- * Landing pages are included in the same bounded inline payload as the campaign bars.
- * @param {PresaleConfig | null} config
- * @returns {LandingConfig | null}
- */
-export function loadLanding(config) {
-  return config?.landing ?? null;
-}
-
-/**
  * Campaigns that should be on screen right now.
  *
  * The snippet ships campaigns that have not started yet, because it may be sitting in a
@@ -120,19 +144,25 @@ export function activeCampaigns(config, now = new Date()) {
   if (!config) return [];
   const at = now.getTime();
   return config.products.filter((campaign) => {
-    const starts = campaign.startsAt ? Date.parse(campaign.startsAt) : null;
-    const ends = campaign.endsAt ? Date.parse(campaign.endsAt) : null;
-    if (starts !== null && !Number.isNaN(starts) && starts > at) return false;
-    if (ends !== null && !Number.isNaN(ends) && ends <= at) return false;
+    const starts = parseInstant(campaign.startsAt);
+    const ends = parseInstant(campaign.endsAt);
+    if (starts !== null && starts > at) return false;
+    if (ends !== null && ends <= at) return false;
     return true;
   });
 }
 
 /**
+ * The landing page, unless its pre-sale is over. The server stops publishing a page once
+ * it ends; this covers the snippet that is still cached in a page after that moment.
+ *
  * @param {PresaleConfig | null} config
- * @returns {string | null}
+ * @param {Date} [now]
+ * @returns {LandingConfig | null}
  */
-export function landingPath(config) {
-  const path = config?.landingPath ?? config?.landing?.urlPath;
-  return typeof path === 'string' && path !== '' ? normalisePath(path) : null;
+export function activeLanding(config, now = new Date()) {
+  const landing = config?.landing ?? null;
+  if (!landing) return null;
+  const ends = parseInstant(landing.endsAt);
+  return ends !== null && ends <= now.getTime() ? null : landing;
 }

@@ -13,13 +13,16 @@
  * our own.
  */
 
-import { claim, el, queryFirst } from './dom.js';
+import { atDeadline, parseInstant } from './countdown.js';
+import { claim, el, isClaimed, queryFirst } from './dom.js';
 import { renderBlock } from './landing-blocks.js';
 import { installTheme } from './theme.js';
 import { currentPath, normalisePath } from './url.js';
 
 /** @typedef {ReturnType<import('./i18n.js').translator>} Translate */
 /** @typedef {import('./config.js').StorefrontTheme} StorefrontTheme */
+/** @typedef {import('./config.js').LandingConfig} LandingConfig */
+/** @typedef {import('./config.js').LandingEntry} LandingEntry */
 /** @typedef {import('./media.js').Media} Media */
 
 /** Where an article's body lives, in preference order. */
@@ -36,47 +39,61 @@ const ARTICLE_ANCHORS = [
  * The title image is also the first photo in the landing page's gallery. Keep it in the
  * gallery even when the editor stores the remaining photos in the UGC block.
  *
- * @param {ReadonlyArray<{ block: unknown }>} blocks
+ * @param {ReadonlyArray<LandingEntry>} entries
  * @returns {Media | null}
  */
-function galleryLead(blocks) {
-  for (const entry of blocks) {
-    const block = /** @type {{ type?: string, media?: Media }} */ (entry.block);
-    if (block.type === 'title_banner' && block.media?.kind === 'image') return block.media;
+function galleryLead(entries) {
+  for (const { block } of entries) {
+    const media = /** @type {{ media?: Media }} */ (block).media;
+    if (block.type === 'title_banner' && media?.kind === 'image') return media;
   }
   return null;
 }
 
 /**
- * @param {{ urlPath?: string, blocks?: ReadonlyArray<{ block: unknown }> }} landing
+ * @param {ReadonlyArray<LandingEntry>} entries
  * @param {Translate} t
- * @param {string} [path] the page we are on, for testing
- * @param {StorefrontTheme} [theme]
- * @returns {HTMLElement | null} the container, when one was inserted
+ * @returns {HTMLElement[]}
  */
-export function applyLanding(landing, t, path = currentPath(), theme) {
-  if (!landing.urlPath) return null;
-  if (normalisePath(landing.urlPath) !== path) return null;
-
-  const anchor = queryFirst(document, ARTICLE_ANCHORS);
-  if (!anchor || !claim(anchor, 'landing')) return null;
-
+function renderBlocks(entries, t) {
   let titleBannerPending = true;
-  const lead = galleryLead(landing.blocks ?? []);
-  const blocks = (landing.blocks ?? [])
-    .map((entry) => {
-      const block = /** @type {{ type?: string }} */ (entry.block);
+  const lead = galleryLead(entries);
+  return entries
+    .map(({ block }) => {
       const priority = titleBannerPending && block.type === 'title_banner';
       const node = renderBlock(block, t, { priority, galleryLead: lead });
       if (priority && node) titleBannerPending = false;
       return node;
     })
     .filter((node) => node !== null);
+}
 
+/**
+ * @param {LandingConfig} landing
+ * @param {Translate} t
+ * @param {string} [path] the page we are on, for testing
+ * @param {StorefrontTheme} [theme]
+ * @returns {HTMLElement | null} the container, when one was inserted
+ */
+export function applyLanding(landing, t, path = currentPath(), theme) {
+  if (normalisePath(landing.urlPath) !== path) return null;
+
+  const anchor = queryFirst(document, ARTICLE_ANCHORS);
+  if (!anchor || isClaimed(anchor, 'landing')) return null;
+
+  // The article is claimed only once the blocks exist. A render that fails half way
+  // leaves it unclaimed, so the next Shoptet update gets another try.
+  const blocks = renderBlocks(landing.blocks, t);
   if (blocks.length === 0) return null;
+  claim(anchor, 'landing');
 
-  const container = el('section', { className: 'cfp-landing' }, blocks);
+  const attrs = landing.title ? { 'aria-label': landing.title } : undefined;
+  const container = el('section', { className: 'cfp-landing', attrs }, blocks);
   installTheme(anchor, theme);
   anchor.appendChild(container);
+
+  // Taken down at the moment the pre-sale ends, like the product widgets.
+  const ends = parseInstant(landing.endsAt);
+  if (ends !== null) atDeadline(container, ends, () => container.remove());
   return container;
 }

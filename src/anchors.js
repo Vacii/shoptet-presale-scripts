@@ -1,68 +1,142 @@
 /**
- * Deciding where the bar goes.
+ * Finding the main product's own elements on a detail page, and deciding where the
+ * widget goes.
  *
- * The previous version had a map of six template names and `return`ed for anything else,
- * so Waterfall, Tokyo, Rock, Pop and every custom template got nothing — and worse, the
- * code after it dereferenced the element it had just failed to insert, so the script died
- * on a TypeError before the catalogue handling ran.
+ * Checked against the product detail markup of Classic, Disco, Samba, Step, Tango and
+ * Techno. Two things hold across all of them:
  *
- * What replaces it: the known templates keep their exact anchor, and everything else
- * falls through an ordered list of candidates. First match wins; no match means the bar
- * is not rendered and nothing else happens.
+ * - Related and alternative products are rendered inside `.p-detail` too, as tiles with
+ *   their own conversion button. A tile always carries `data-micro-identifier`, so
+ *   anything inside one belongs to another product and is skipped.
+ * - The price, quantity and conversion button sit together in one purchase block. The
+ *   widget goes directly before that block and never inside it, so the template's own
+ *   layout, Shoptet's variant and price scripts, and other addons find the block exactly
+ *   where they left it.
  */
 
-import { queryFirst } from './dom.js';
+/** The detail page's product area. Nothing outside it is touched. */
+const PRODUCT_SCOPE = '.p-detail';
+
+/** Marks a product tile; anything inside one belongs to a different product. */
+const TILE = '[data-micro-identifier]';
 
 /**
- * Anchors that produced the best placement on the templates we have seen.
- * @type {Record<string, string | undefined>}
+ * The purchase block, from the most specific wrapper to the bare button. Disco, Samba and
+ * Step use `.p-to-cart-block`, Techno lists variants in `.variant-table`, and Classic and
+ * Tango have only `.add-to-cart`.
  */
-const TEMPLATE_ANCHORS = {
-  Classic: '.add-to-cart',
-  Samba: '.p-price-wrapper',
-  Step: '.p-basic-info-block',
-  Tango: '.p-short-description',
-  Techno: '.detail-parameters.second',
-  Disco: '.p-detail-inner .detail-parameters',
-};
+const PURCHASE_BLOCKS = ['.p-to-cart-block', '.variant-table', '.add-to-cart'];
 
 /**
- * Ordered from "closest to the buy button" outwards. Anything that gets us into the
- * product's information column is better than not rendering.
+ * Where the widget goes when the product has no purchase block at all, for instance
+ * because it cannot be ordered. It is inserted after the first match.
  */
-export const PRODUCT_ANCHORS = [
-  '.add-to-cart',
-  '.p-price-wrapper',
-  '.p-final-price-wrapper',
-  '.p-basic-info-block',
-  '.detail-parameters',
-  '.p-short-description',
-  '.p-detail-inner',
-  '.p-detail',
-];
+const FALLBACK_ANCHORS = ['.p-price-wrapper', '.detail-parameters', '.p-short-description'];
 
-/**
- * @param {string} template
- * @param {ParentNode} [root]
- * @returns {HTMLElement | null}
- */
-export function resolveProductAnchor(template, root = document) {
-  const preferred = TEMPLATE_ANCHORS[template];
-  const candidates = preferred ? [preferred, ...PRODUCT_ANCHORS] : PRODUCT_ANCHORS;
-  return queryFirst(root, candidates);
-}
-
-/** Where a product's availability is printed on a detail page. */
-export const AVAILABILITY_ANCHORS = [
+/** Where the product's availability is printed. */
+const AVAILABILITY_ANCHORS = [
   '.availability-label',
   '.availability-value span',
   '.availability span',
-  '.p-detail-info .availability',
 ];
 
 /** The conversion button, whose label becomes "pre-order". */
-export const ADD_TO_CART_ANCHORS = [
+const CONVERSION_BUTTONS = [
   'button.add-to-cart-button',
   '.add-to-cart button[type="submit"]',
   'button.btn-conversion',
 ];
+
+/**
+ * @param {Element} node
+ * @returns {boolean}
+ */
+function isOwn(node) {
+  return node.closest(TILE) === null;
+}
+
+/**
+ * Every element of the main product matching one of the selectors, in document order.
+ *
+ * @param {ReadonlyArray<string>} selectors
+ * @returns {HTMLElement[]}
+ */
+function ownElements(selectors) {
+  const scope = document.querySelector(PRODUCT_SCOPE);
+  if (!scope) return [];
+  return Array.from(scope.querySelectorAll(selectors.join(','))).filter(
+    /** @returns {node is HTMLElement} */ (node) => node instanceof HTMLElement && isOwn(node),
+  );
+}
+
+/**
+ * The first element of the main product for the first selector that has one.
+ *
+ * @param {ReadonlyArray<string>} selectors
+ * @returns {HTMLElement | null}
+ */
+function firstOwn(selectors) {
+  for (const selector of selectors) {
+    const [found] = ownElements([selector]);
+    if (found) return found;
+  }
+  return null;
+}
+
+/**
+ * Whether `node` lays its children out side by side. The widget is a full-width block,
+ * and dropping it into such a row would squeeze it next to the price.
+ *
+ * @param {HTMLElement} node
+ * @returns {boolean}
+ */
+function isRow(node) {
+  if (node.classList.contains('row')) return true;
+  const style = window.getComputedStyle(node);
+  if (style.display.endsWith('grid')) return true;
+  return style.display.endsWith('flex') && !style.flexDirection.startsWith('column');
+}
+
+/**
+ * The purchase block as one unit. Tango puts `.add-to-cart` in a Bootstrap `.row` beside
+ * the price, so the unit grows to that row; the product form itself is never crossed.
+ *
+ * @param {HTMLElement} block
+ * @returns {HTMLElement}
+ */
+function purchaseUnit(block) {
+  let unit = block;
+  let parent = unit.parentElement;
+  while (parent && parent.tagName !== 'FORM' && !parent.matches(PRODUCT_SCOPE) && isRow(parent)) {
+    unit = parent;
+    parent = unit.parentElement;
+  }
+  return unit;
+}
+
+/**
+ * Where the widget goes: directly before the purchase block, or after a fallback anchor.
+ *
+ * @returns {{ node: HTMLElement, position: 'beforebegin' | 'afterend' } | null}
+ */
+export function widgetPlacement() {
+  const block = firstOwn(PURCHASE_BLOCKS);
+  if (block) return { node: purchaseUnit(block), position: 'beforebegin' };
+  const anchor = firstOwn(FALLBACK_ANCHORS);
+  return anchor ? { node: purchaseUnit(anchor), position: 'afterend' } : null;
+}
+
+/** @returns {HTMLElement | null} */
+export function availabilityLabel() {
+  return firstOwn(AVAILABILITY_ANCHORS);
+}
+
+/**
+ * All of the product's conversion buttons. Tango renders one for wide and one for narrow
+ * screens, and Techno one per variant row.
+ *
+ * @returns {HTMLElement[]}
+ */
+export function conversionButtons() {
+  return ownElements(CONVERSION_BUTTONS);
+}
